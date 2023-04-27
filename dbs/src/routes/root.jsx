@@ -4,8 +4,8 @@ import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
 import ListIcon from '@rsuite/icons/List';
 import LineChartIcon from '@rsuite/icons/LineChart';
 import ModelIcon from '@rsuite/icons/Model';
-import "rsuite/dist/rsuite.min.css";
-import React, { useEffect, useCallback } from "react";
+import 'rsuite/dist/rsuite-no-reset.min.css';
+import React, { useCallback } from "react";
 
 function redirect(loc){
   document.location.href="/"+loc;
