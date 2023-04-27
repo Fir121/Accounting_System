@@ -5,9 +5,11 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import { Root, CustomNavbar} from "./routes/root";
+import Root from "./routes/root";
 import ErrorPage from "./error-page";
-import Contact from "./routes/contact";
+import Dashboard from "./routes/dashboard";
+import Accounts from "./routes/accounts";
+import Transactions from "./routes/transactions";
 
 const router = createBrowserRouter([
   {
@@ -16,8 +18,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "contacts/:contactId",
-        element: <Contact />,
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "accounts",
+        element: <Accounts />,
+      },
+      {
+        path: "transactions",
+        element: <Transactions />,
       },
     ],
   },

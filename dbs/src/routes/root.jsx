@@ -1,53 +1,58 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Navbar, Sidenav, Nav } from 'rsuite';
 import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
 import ListIcon from '@rsuite/icons/List';
 import LineChartIcon from '@rsuite/icons/LineChart';
-import HomeIcon from '@rsuite/icons/legacy/Home';
-import CogIcon from '@rsuite/icons/legacy/Cog';
+import ModelIcon from '@rsuite/icons/Model';
 import "rsuite/dist/rsuite.min.css";
+import React, { useEffect, useCallback } from "react";
 
-const CustomNavbar = ({ onSelect, activeKey, ...props }) => {
-  return (
-    <Navbar {...props}>
-      <Navbar.Brand href="#">RSUITE</Navbar.Brand>
-      <Nav onSelect={onSelect} activeKey={activeKey}>
-        <Nav.Item eventKey="1" icon={<HomeIcon />}>
-          Home
-        </Nav.Item>
-        <Nav.Item eventKey="2">News</Nav.Item>
-        <Nav.Item eventKey="3">Products</Nav.Item>
-        <Nav.Menu title="About">
-          <Nav.Item eventKey="4">Company</Nav.Item>
-          <Nav.Item eventKey="5">Team</Nav.Item>
-          <Nav.Item eventKey="6">Contact</Nav.Item>
-        </Nav.Menu>
-      </Nav>
-      <Nav pullRight>
-        <Nav.Item icon={<CogIcon />}>Settings</Nav.Item>
-      </Nav>
-    </Navbar>
-  );
-};
+function redirect(loc){
+  document.location.href="/"+loc;
+}
 
 export default function Root() {
+    var activeKey = null
+    var setActiveKey = null
+    if (window.location.pathname !== '/'){
+      [activeKey, setActiveKey] = React.useState(window.location.pathname.substring(1));
+    }
+    else{
+      redirect("dashboard")
+    }
+
+    function handleActiveKey(e){
+      if (e !== undefined){
+        setActiveKey(e);
+        //redirect(e)
+      }
+    }
+
+    const navigate = useNavigate();
+    const goDashboard = useCallback((e) => navigate('/dashboard', {replace: true}), [navigate]);
+    const goAccounts = useCallback((e) => navigate('/accounts', {replace: true}), [navigate]);
+    const goTransactions = useCallback((e) => navigate('/transactions', {replace: true}), [navigate]);
+
     return (
       <>
         <div style={{ width: 240 }} id='sidebar'>
           <Sidenav>
             <Sidenav.Body>
-              <Nav activeKey="1">
-                <Nav.Item eventKey="1" icon={<DashboardIcon />}>
+              <Nav activeKey={activeKey} onSelect={handleActiveKey}>
+                <Nav.Item eventKey="dashboard" icon={<DashboardIcon />} onClick={goDashboard}>
                   Dashboard
                 </Nav.Item>
-                <Nav.Item eventKey="2" icon={<ListIcon />}>
+                <Nav.Item eventKey="accounts" icon={<ModelIcon />} onClick={goAccounts}>
+                  Accounts
+                </Nav.Item>
+                <Nav.Item eventKey="transactions" icon={<ListIcon />} onClick={goTransactions}>
                   Transactions
                 </Nav.Item>
-                <Nav.Menu eventKey="3" title="Report" icon={<LineChartIcon />}>
-                  <Nav.Item eventKey="3-1">R1</Nav.Item>
-                  <Nav.Item eventKey="3-2">R2</Nav.Item>
-                  <Nav.Item eventKey="3-3">R2</Nav.Item>
-                  <Nav.Item eventKey="3-4">R4</Nav.Item>
+                <Nav.Menu eventKey="report" title="Report" icon={<LineChartIcon />}>
+                  <Nav.Item eventKey="report-1">R1</Nav.Item>
+                  <Nav.Item eventKey="report-2">R2</Nav.Item>
+                  <Nav.Item eventKey="report-3">R2</Nav.Item>
+                  <Nav.Item eventKey="report-4">R4</Nav.Item>
                 </Nav.Menu>
               </Nav>
             </Sidenav.Body>
