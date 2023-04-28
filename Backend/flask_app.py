@@ -1,7 +1,9 @@
 from flask import request, jsonify, Flask
 import backend_functions as bf
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/create_user', methods=['POST'])
 def create_user():
@@ -12,6 +14,11 @@ def create_user():
 def read_user():
     user_id = request.args.get('user_id')
     return jsonify(bf.read_user(user_id))
+
+@app.route('/read_user_login', methods=['GET'])
+def read_user_login():
+    user_company_name = request.args.get('user_company_name')
+    return jsonify(bf.read_user_login(user_company_name))
 
 @app.route('/delete_user', methods=['POST'])
 def delete_user():

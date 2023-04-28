@@ -8,8 +8,8 @@ def create_cursor():
 
 def return_message(status, msg="N/A", data={}):
     if status:
-        return {"status":"success", "description":msg, "data":data}
-    return {"status":"error", "description":msg, "data":data}
+        return {"status":1, "description":msg, "data":data}
+    return {"status":0, "description":msg, "data":data}
 
 #### USERS
 def create_user(user_company_name):
@@ -31,6 +31,17 @@ def read_user(user_id):
     cursor = create_cursor()
     try:
         cursor.execute("select * from user where user_id=%s",(user_id,))
+    except:
+        return return_message(False, "Internal Sever Error")
+    data = cursor.fetchone()
+    if data is None:
+        return return_message(False, "User does not Exist")
+    return return_message(True, data=data)
+
+def read_user_login(user_company_name):
+    cursor = create_cursor()
+    try:
+        cursor.execute("select * from user where user_company_name=%s",(user_company_name,))
     except:
         return return_message(False, "Internal Sever Error")
     data = cursor.fetchone()
