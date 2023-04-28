@@ -6,7 +6,7 @@ import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody, MDBIcon, MDBCon
 export default function Accounts() {
     const mystyle = {
         backgroundColor: '#55acee',
-        'box-shadow': 'none',
+        'boxShadow': 'none',
       };
     return (
         <MDBContainer fluid>
