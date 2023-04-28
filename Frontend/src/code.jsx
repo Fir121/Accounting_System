@@ -68,15 +68,39 @@ export function signup(user_company_name){
     });
 }
 
-export function getAccounts(){
-    $.ajax({
+export function getAccounts(setData){
+    return $.ajax({
         type: "GET",
         dataType:"json",
         url: base_url+"/get_accounts",
-        data: {"user_id":user_data["user_id"]},
+        data: {"user_id":user_data["user_id"]}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    setData(data.data)
+                    return data.data;
+                }
+                else{
+                    return [];
+                    // call error
+                }
+            }).fail( function(exp) {
+                return [];
+                // call error
+        });
+}
+
+export function createAccount(account_name, account_type, account_description,setOpen,setData){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/create_account",
+        data: {"account_name":account_name,"account_type":account_type,"account_description":account_description,"account_user_id":user_data["user_id"]},
         success: function(data) {
+            console.log(data);
             if (data.status == 1){
-                return data.data;
+                getAccounts(setData);
+                setOpen(false);
             }
             else{
                 // call error
@@ -86,5 +110,4 @@ export function getAccounts(){
             // call error
         }
     });
-    return [];
 }
