@@ -67,3 +67,24 @@ export function signup(user_company_name){
         }
     });
 }
+
+export function getAccounts(){
+    $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/get_accounts",
+        data: {"user_id":user_data["user_id"]},
+        success: function(data) {
+            if (data.status == 1){
+                return data.data;
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+    return [];
+}
