@@ -10,6 +10,8 @@ import ErrorPage from "./error-page";
 import Dashboard from "./routes/dashboard";
 import Accounts from "./routes/accounts";
 import Transactions from "./routes/transactions";
+import Login from "./routes/login";
+import Signup from "./routes/signup";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,16 @@ const router = createBrowserRouter([
         element: <Transactions />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+    errorElement: <ErrorPage />
   },
 ]);
 
