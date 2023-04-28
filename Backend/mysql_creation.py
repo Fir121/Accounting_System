@@ -7,7 +7,7 @@ cursor.execute("""create table if not exists user(
                user_id int auto_increment not null,
                user_creation_date datetime DEFAULT CURRENT_TIMESTAMP not null,
                user_company_name varchar(50) not null,
-               primary key(user_company_name)
+               primary key(user_id), unique key(user_company_name)
 )""")
 cursor.execute("""create table if not exists account(
                account_id int auto_increment not null,
@@ -15,7 +15,8 @@ cursor.execute("""create table if not exists account(
                account_type varchar(30) not null,
                account_description text,
                account_user_id int not null,
-               primary key(account_name, account_user_id), 
+               primary key(account_id),
+               unique key(account_name, account_user_id), 
                foreign key(account_user_id) references user(user_id) ON DELETE CASCADE
 )""")
 cursor.execute("""create table if not exists description(
@@ -31,7 +32,7 @@ cursor.execute("""create table if not exists transaction(
                transaction_from_account_id int not null,
                transaction_to_account_id int not null,
                transaction_description_id int,
-               primary key(transaction_id, transaction_date), 
+               primary key(transaction_id), 
                foreign key(transaction_description_id) references description(description_id) ON DELETE SET NULL,
                foreign key(transaction_from_account_id) references account(account_id) ON DELETE CASCADE,
                foreign key(transaction_to_account_id) references account(account_id) ON DELETE CASCADE
@@ -46,6 +47,7 @@ cursor.execute(""""
 """)
 
 # TRIGGERS
+# DELIMITER $$
 cursor.execute("""
 CREATE TRIGGER before_transaction_insert
 BEFORE INSERT
@@ -56,3 +58,5 @@ BEGIN
 	END IF;
 END
 """)
+# $$
+# DELIMITER ;

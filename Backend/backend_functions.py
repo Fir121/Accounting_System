@@ -67,7 +67,7 @@ def read_account(account_id):
         return return_message(False, "account does not Exist")
     return return_message(True, data=data)
 
-def get_accounts(user_id, detailed=True):
+def get_accounts(user_id, detailed):
     cursor = create_cursor()
     try:
         cursor.execute("select * from account where account_user_id=%s",(user_id,))
