@@ -1,7 +1,7 @@
 import React from 'react';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody, MDBIcon, MDBContainer, MDBRow, MDBCol  } from 'mdb-react-ui-kit';
+import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody, MDBIcon, MDBContainer, MDBRow, MDBCol, MDBTypography  } from 'mdb-react-ui-kit';
 
 export default function Accounts() {
     const mystyle = {
@@ -11,13 +11,14 @@ export default function Accounts() {
     return (
         <MDBContainer fluid>
         <MDBRow>
-        <MDBCol></MDBCol>
+        <MDBCol start><MDBTypography tag='h2'>Accounts</MDBTypography></MDBCol>
         <MDBCol size="auto" end>
         <MDBBtn style={ mystyle } href='#'>
-            <MDBIcon className='me-2' fab icon='plus' /> New
+            <MDBIcon fab icon='plus' /> New
         </MDBBtn>
         </MDBCol>
         </MDBRow>
+        <MDBRow><div style={{visibility:'hidden'}}>ABC</div></MDBRow>
         <MDBRow>
         <MDBTable align='middle'>
           <MDBTableHead>
@@ -26,6 +27,7 @@ export default function Accounts() {
               <th scope='col'>Type</th>
               <th scope='col'>Transaction Count</th>
               <th scope='col'>Status</th>
+              <th></th>
             </tr>
           </MDBTableHead>
           <MDBTableBody>

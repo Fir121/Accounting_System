@@ -1,4 +1,11 @@
-// need date selector, and table with select for particulars
+import { Container, Header, Content } from 'rsuite';
+import 'rsuite/dist/rsuite-no-reset.min.css';
+
 export default function Transactions() {
-    return <h2>Transactions</h2>
+    return (
+        <Container>
+            <Header>Header</Header>
+            <Content>Content</Content>
+        </Container>
+    );
 }
