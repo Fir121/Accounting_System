@@ -26,7 +26,7 @@ const NavToggle = ({ expand, onChange }) => {
           trigger="click"
           title={<HelpOutlineIcon style={{ width: 20, height: 20 }} size="sm" />}
         >
-          <Nav.Item>About</Nav.Item>
+          <Nav.Item>Delete Account</Nav.Item>
           <Nav.Item>Help</Nav.Item>
         </Nav.Menu>
       </Nav>
