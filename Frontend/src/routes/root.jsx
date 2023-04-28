@@ -11,10 +11,9 @@ import AngleLeftIcon from '@rsuite/icons/legacy/AngleLeft';
 import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
 import ExitIcon from '@rsuite/icons/Exit';
 import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
+import * as HelperFunctions from "../code";
 
-function redirect(loc){
-  document.location.href="/"+loc;
-}
+
 
 const NavToggle = ({ expand, onChange }) => {
   return (
@@ -43,17 +42,18 @@ const NavToggle = ({ expand, onChange }) => {
 export default function Root() {
     var activeKey = null
     var setActiveKey = null
-    if (window.location.pathname !== '/'){
+    if (window.location.pathname !== '/' && HelperFunctions.getUserData()){
       [activeKey, setActiveKey] = React.useState(window.location.pathname.substring(1));
     }
     else{
-      redirect("dashboard")
+      HelperFunctions.redirect("login")
+      return <></>
     }
+    
 
     function handleActiveKey(e){
       if (e !== undefined){
         setActiveKey(e);
-        //redirect(e)
       }
     }
 

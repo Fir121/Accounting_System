@@ -12,8 +12,19 @@ import {
 } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import PeopleBranchIcon from '@rsuite/icons/PeopleBranch';
+import React from "react";
+import * as HelperFunctions from "../code";
 
 export default function Signup() {
+    const [formValue, setFormValue] = React.useState({
+        company: "",
+    })
+    const formRef = React.useRef()
+
+    const handleSubmit = () => {
+        HelperFunctions.signup(formValue["company"]);
+    }
+
     return (
             <Container>
                 <Header>
@@ -38,7 +49,7 @@ export default function Signup() {
                         style={{ margin: 20 }}>
                         <FlexboxGrid.Item>
                             <Panel header={<h3>Sign Up</h3>} bordered>
-                                <Form>
+                                <Form ref={formRef} onChange={setFormValue} onSubmit={handleSubmit}>
                                     <Form.Group>
                                         <Form.ControlLabel>
                                             Company
@@ -52,7 +63,7 @@ export default function Signup() {
                                     <Form.Group>
                                         <ButtonToolbar>
                                             <Button appearance="primary"
-                                                color="green">
+                                                color="green" type="submit">
                                                 Sign Up
                                             </Button>
                                         </ButtonToolbar>
