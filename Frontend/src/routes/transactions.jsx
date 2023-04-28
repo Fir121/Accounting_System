@@ -16,12 +16,21 @@ export default function Transactions() {
          visibility : !visible ? "hidden" : "showing",
         marginRight: '20px'
       };
+    var mystyle3 = {
+        backgroundColor: 'red',
+        'boxShadow': 'none',
+         visibility : !visible ? "hidden" : "showing",
+        marginRight: '20px'
+      };
     const styles = { width: 200, display: 'block', marginBottom: 10 };
     return (
         <MDBContainer fluid>
         <MDBRow>
         <MDBCol start><MDBTypography tag='h2'>Transactions</MDBTypography></MDBCol>
         <MDBCol size="auto" end>
+        <MDBBtn style={ mystyle3 } href='#'>
+            <MDBIcon fab icon='trash' /> Delete
+        </MDBBtn>
         <MDBBtn style={ mystyle2 } href='#'>
             <MDBIcon fab icon='plus' /> Add Description
         </MDBBtn>
