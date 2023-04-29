@@ -68,6 +68,36 @@ export function signup(user_company_name){
     });
 }
 
+function process_date(transaction_date){
+    var pad = function(num) { return ('00'+num).slice(-2) };
+    return transaction_date.getUTCFullYear()         + '-' +
+    pad(transaction_date.getUTCMonth() + 1)  + '-' +
+    pad(transaction_date.getUTCDate());
+}
+
+export function getTransactions(transaction_date, setData){
+    transaction_date = process_date(transaction_date);
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/get_transactions",
+        data: {"user_id":user_data["user_id"], "transaction_date":transaction_date}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    setData(data.data)
+                    return data.data;
+                }
+                else{
+                    return [];
+                    // call error
+                }
+            }).fail( function(exp) {
+                return [];
+                // call error
+        });
+}
+
 export function getAccounts(setData){
     return $.ajax({
         type: "GET",
@@ -88,6 +118,55 @@ export function getAccounts(setData){
                 return [];
                 // call error
         });
+}
+
+export function getAccountsList(setSelectData){
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/get_accounts",
+        data: {"user_id":user_data["user_id"], "detailed":true}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    setSelectData(data.data.map(item => ({
+                        label: item.account_name,
+                        value: item.account_id
+                      })));
+                    return data.data;
+                }
+                else{
+                    return [];
+                    // call error
+                }
+            }).fail( function(exp) {
+                return [];
+                // call error
+        });
+}
+
+export function createTransaction(transaction_date, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setOpen,setData){
+    var old_date_obj = transaction_date
+    transaction_date = process_date(transaction_date);
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/create_transaction",
+        data: {"transaction_date":transaction_date,"transaction_amount":transaction_amount,"transaction_type":transaction_type,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getTransactions(old_date_obj, setData);
+                setOpen(false);
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
 }
 
 export function createAccount(account_name, account_type, account_description,setOpen,setData){

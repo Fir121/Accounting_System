@@ -93,7 +93,7 @@ def get_accounts(user_id, detailed):
     data = cursor.fetchall()
     if not detailed:
         for i in range(len(data)):
-            data[i] = {"account_id":data[i]["account_id"], "account_name":data[i]["account_name"], "account_type":data[i]["account_type"]}
+            data[i] = {"account_id":data[i]["account_id"], "account_name":data[i]["account_name"]}
     return return_message(mydb, cursor, True, data=data)
 
 def update_account(account_id, account_name, account_type, account_description):
@@ -136,7 +136,8 @@ def get_transactions(user_id, transaction_date):
     mydb, cursor = create_cursor()
     try:
         cursor.execute("select * from UserTransaction where user_id=%s and transaction_date=%s",(user_id, transaction_date))
-    except:
+    except Exception as e:
+        print(e)
         return return_message(mydb, cursor, False, "Internal Sever Error")
     data = cursor.fetchall()
     return return_message(mydb, cursor, True, data=data)

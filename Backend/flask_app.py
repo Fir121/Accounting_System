@@ -43,6 +43,8 @@ def read_account():
 def get_accounts():
     user_id = request.args.get('user_id')
     detailed = request.args.get('detailed')
+    if detailed is None:
+        detailed = True
     return jsonify(bf.get_accounts(user_id, detailed))
 
 @app.route('/update_account', methods=['POST'])
