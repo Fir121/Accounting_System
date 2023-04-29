@@ -4,8 +4,10 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { MDBBtn, MDBTable, MDBTableHead, MDBTableBody, MDBIcon, MDBContainer, MDBRow, MDBCol, MDBTypography, MDBCheckbox } from 'mdb-react-ui-kit';
 import { DatePicker } from 'rsuite';
 import * as HelperFunctions from "../code";
-import { Modal, Button, Placeholder, Form , Input, SelectPicker, InputNumber, InputPicker } from 'rsuite';
+import { Modal, Button, Placeholder, Form , Input, SelectPicker, InputNumber, InputPicker,Checkbox,CheckboxGroup } from 'rsuite';
 import "rsuite/dist/rsuite.min.css";
+
+const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
 export default function Transactions() {
   const [data, setData] = React.useState([]);
@@ -17,7 +19,19 @@ export default function Transactions() {
       HelperFunctions.getAccountsList(setSelectData);
       setOpen(true);
     }
-    const handleClose = () => setOpen(false);
+    const handleDescription = () => {
+      setOpen2(true);
+    }
+
+    const handleClose = () => {
+      setFormValue({
+        name: "",
+        amount: "",
+        from: "",
+        to: "",
+    });
+      setOpen(false);
+    }
     const [selectData, setSelectData] = React.useState([]);
     const [datevalue, setDateValue] = React.useState(new Date());
     const changeDateValue = (e) => {
@@ -33,8 +47,32 @@ export default function Transactions() {
     const formRef = React.useRef()
 
     function handleSubmit(){
-      HelperFunctions.createTransaction(datevalue, formValue["amount"], formValue["type"], formValue["from"], formValue["to"],setOpen,setData)
+      setAmountErrorVisible(false);
+      setTypeErrorVisible(false);
+      setFromErrorVisible(false);
+      setToErrorVisible(false);
+      var flag = false;
+      if (HelperFunctions.isEmpty(formValue["type"])){
+        setTypeErrorVisible(true);
+        flag = true;
+      }
+      if (HelperFunctions.isEmpty(formValue["amount"])){
+        setAmountErrorVisible(true);
+        flag = true;
+      }
+      if (HelperFunctions.isEmpty(formValue["from"])){
+        setFromErrorVisible(true);
+        flag = true;
+      }
+      if (HelperFunctions.isEmpty(formValue["to"])){
+        setToErrorVisible(true);
+        flag = true;
+      }
+      if (!flag){
+        HelperFunctions.createTransaction(datevalue, formValue["amount"], formValue["type"], formValue["from"], formValue["to"],setOpen,setData,setFormValue)
+      }
     }
+    
     const inputData = ['Debit', 'Credit'].map(item => ({
       label: item,
       value: item
@@ -48,22 +86,79 @@ export default function Transactions() {
         backgroundColor: '#55acee',
         'boxShadow': 'none',
       };
-    const [visible, setVisible] = React.useState(true);
+    const [checkboxValue, setCheckboxValue] = React.useState([]);
     var mystyle2 = {
         backgroundColor: '#96038f',
         'boxShadow': 'none',
-         visibility : !visible ? "hidden" : "showing",
-        marginRight: '20px'
-      };
-    var mystyle3 = {
-        backgroundColor: 'red',
-        'boxShadow': 'none',
-         visibility : !visible ? "hidden" : "showing",
+         visibility : (checkboxValue.length == 0) ? "hidden" : "visible",
         marginRight: '20px'
       };
     const styles = { width: 200, display: 'block', marginBottom: 10 };
+
+    const [typeErrorVisible, setTypeErrorVisible] = React.useState(false);
+    const [amountErrorVisible, setAmountErrorVisible] = React.useState(false);
+    const [fromErrorVisible, setFromErrorVisible] = React.useState(false);
+    const [toErrorVisible, setToErrorVisible] = React.useState(false);
+    const typeErrorMessage = typeErrorVisible ? 'Type is required' : null;
+    const amountErrorMessage = amountErrorVisible ? 'Amount is required' : null;
+    const fromErrorMessage = fromErrorVisible ? 'From is required' : null;
+    const toErrorMessage = toErrorVisible ? 'To is required' : null;
+
+    
+    const [open2, setOpen2] = React.useState(false);
+    const handleOpen2 = () => setOpen(true);
+    const handleClose2 = () => {
+      setFormValue({
+        description: ""
+    });
+      setOpen2(false);
+    }
+    const [formValue2, setFormValue2] = React.useState({
+        name: "",
+        type: "",
+        description: "",
+    })
+    const formRef2 = React.useRef()
+
+    function handleSubmit2(){
+      setDescErrorVisible(false);
+      var flag = false;
+      if (HelperFunctions.isEmpty(formValue2["description"])){
+        setDescErrorVisible(true);
+        flag = true;
+      }
+      if (!flag){
+        HelperFunctions.setDescription(formValue2["description"],checkboxValue,setOpen2,setFormValue2,setSelectData)
+      }
+    }
+
+    const [descErrorVisible, setDescErrorVisible] = React.useState(false);
+    const descErrorMessage = descErrorVisible ? 'Description is required' : null;
+
     return (
       <>
+      <Modal overflow={true} open={open2} onClose={handleClose2}>
+            <Modal.Header>
+              <Modal.Title>Add Description</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <Form ref={formRef2} onChange={setFormValue2}>
+            <Form.Group controlId="description">
+                <Form.ControlLabel>Description</Form.ControlLabel>  
+                <Form.Control rows={5} name="description" accepter={Textarea} errorMessage={descErrorMessage}/>
+              </Form.Group>
+            </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={handleSubmit2} appearance="primary">
+                Create
+              </Button>
+              <Button onClick={handleClose2} appearance="subtle">
+                Cancel
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
        <Modal overflow={true} open={open} onClose={handleClose}>
             <Modal.Header>
               <Modal.Title>Add Transaction</Modal.Title>
@@ -72,19 +167,19 @@ export default function Transactions() {
             <Form ref={formRef} onChange={setFormValue}>
               <Form.Group controlId="type">
                 <Form.ControlLabel>Transaction Type:</Form.ControlLabel>
-                <Form.Control name="type" accepter={InputPicker} data={inputData} />
+                <Form.Control name="type" accepter={InputPicker} data={inputData} errorMessage={typeErrorMessage}/>
               </Form.Group>
               <Form.Group controlId="amount">
                 <Form.ControlLabel>Transaction Amount:</Form.ControlLabel>
-                <Form.Control name="amount" accepter={InputNumber} defaultValue={0} step={0.01} />
+                <Form.Control name="amount" accepter={InputNumber} defaultValue={0} step={0.01} errorMessage={amountErrorMessage}/>
               </Form.Group>
               <Form.Group controlId="from">
                 <Form.ControlLabel>From Account:</Form.ControlLabel>
-                <Form.Control name="from" accepter={SelectPicker} data={selectData} />
+                <Form.Control name="from" accepter={SelectPicker} data={selectData} errorMessage={fromErrorMessage}/>
               </Form.Group>
               <Form.Group controlId="to">
                 <Form.ControlLabel>To Account:</Form.ControlLabel>
-                <Form.Control name="to" accepter={SelectPicker} data={selectData} />
+                <Form.Control name="to" accepter={SelectPicker} data={selectData} errorMessage={toErrorMessage}/>
               </Form.Group>
             </Form>
             </Modal.Body>
@@ -102,10 +197,7 @@ export default function Transactions() {
         <MDBRow>
         <MDBCol start><MDBTypography tag='h2'>Transactions</MDBTypography></MDBCol>
         <MDBCol size="auto" end>
-        <MDBBtn style={ mystyle3 } href='#'>
-            <MDBIcon icon='trash' /> Delete
-        </MDBBtn>
-        <MDBBtn style={ mystyle2 } href='#'>
+        <MDBBtn style={ mystyle2 } onClick={handleDescription}>
             <MDBIcon fab icon='plus' /> Add Description
         </MDBBtn>
         <MDBBtn style={ mystyle } onClick={handleOpen}>
@@ -124,7 +216,7 @@ export default function Transactions() {
             <MDBTableHead light>
                 <tr>
                 <th scope='col'>
-                    <MDBCheckbox></MDBCheckbox>
+                    
                 </th>
                 <th scope='col'>Amount</th>
                 <th scope='col'>Type</th>
@@ -134,11 +226,17 @@ export default function Transactions() {
                 </tr>
             </MDBTableHead>
             <MDBTableBody>
+            
                 {data.map((dataObj, index) => {
                 return (
                   <tr>
                     <th scope='col'>
-                        <MDBCheckbox></MDBCheckbox>
+                        <CheckboxGroup inline name="checkboxList" value={checkboxValue}
+                        onChange={value => {
+                          setCheckboxValue(value);
+                        }}>
+                          <Checkbox value={dataObj.transaction_id}></Checkbox>
+                        </CheckboxGroup>
                     </th>
                     <td>{dataObj.transaction_amount}</td>
                     <td>{dataObj.transaction_type}</td>
@@ -152,6 +250,7 @@ export default function Transactions() {
                     </tr>
                 );
               })}
+              
             </MDBTableBody>
         </MDBTable>
         </MDBRow>

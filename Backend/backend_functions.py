@@ -166,7 +166,7 @@ def create_description(description, description_links):
     except:
         return return_message(mydb, cursor, False, "Could not create description")
     try:
-        cursor.execute("select SELECT LAST_INSERT_ID() as description_id")
+        cursor.execute("select LAST_INSERT_ID() as description_id")
     except:
         return return_message(mydb, cursor, False, "Internal Sever Error")
     data = cursor.fetchone()
@@ -175,8 +175,10 @@ def create_description(description, description_links):
     
     description_id = data["description_id"]
     try:
-        cursor.execute("update transaction set transaction_description_id=%s where transaction_id in %s", (description_id, str(tuple(description_links))))
-    except:
+        #SQL INJECTION DANGER DANGER DANGER
+        cursor.execute(f"update transaction set transaction_description_id=%s where transaction_id in {str(tuple(description_links))}", (description_id,))
+    except Exception as e:
+        print(e)
         return return_message(mydb, cursor, False, "Could not create description")
     return return_message(mydb, cursor, True)
 

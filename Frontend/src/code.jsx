@@ -145,18 +145,24 @@ export function getAccountsList(setSelectData){
         });
 }
 
-export function createTransaction(transaction_date, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setOpen,setData){
-    var old_date_obj = transaction_date
-    transaction_date = process_date(transaction_date);
+export function isEmpty(item){
+    return item === null || item === "" || item === undefined
+}
+
+export function setDescription(description,description_links,setOpen,setFormValue,setSelectData){
     $.ajax({
         type: "POST",
         dataType:"json",
-        url: base_url+"/create_transaction",
-        data: {"transaction_date":transaction_date,"transaction_amount":transaction_amount,"transaction_type":transaction_type,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
+        contentType: "application/json",
+        url: base_url+"/create_description",
+        data: JSON.stringify({"description":description,"description_links":description_links}),
         success: function(data) {
             console.log(data);
             if (data.status == 1){
-                getTransactions(old_date_obj, setData);
+                setFormValue({
+                    description:""
+                });
+                setSelectData([]);
                 setOpen(false);
             }
             else{
@@ -169,7 +175,37 @@ export function createTransaction(transaction_date, transaction_amount, transact
     });
 }
 
-export function createAccount(account_name, account_type, account_description,setOpen,setData){
+export function createTransaction(transaction_date, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setOpen,setData,setFormValue){
+    var old_date_obj = transaction_date
+    transaction_date = process_date(transaction_date);
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/create_transaction",
+        data: {"transaction_date":transaction_date,"transaction_amount":transaction_amount,"transaction_type":transaction_type,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getTransactions(old_date_obj, setData);
+                setFormValue({
+                    name: "",
+                    amount: "",
+                    from: "",
+                    to: "",
+                });
+                setOpen(false);
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+}
+
+export function createAccount(account_name, account_type, account_description,setOpen,setData,setFormValue){
     $.ajax({
         type: "POST",
         dataType:"json",
@@ -179,6 +215,11 @@ export function createAccount(account_name, account_type, account_description,se
             console.log(data);
             if (data.status == 1){
                 getAccounts(setData);
+                setFormValue({
+                    name: "",
+                    type: "",
+                    description: "",
+                });
                 setOpen(false);
             }
             else{

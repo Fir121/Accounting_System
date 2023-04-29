@@ -21,7 +21,14 @@ export default function Accounts() {
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+      setFormValue({
+        name: "",
+        type: "",
+        description: "",
+    });
+      setOpen(false);
+    }
     const [formValue, setFormValue] = React.useState({
         name: "",
         type: "",
@@ -30,7 +37,20 @@ export default function Accounts() {
     const formRef = React.useRef()
 
     function handleSubmit(){
-      HelperFunctions.createAccount(formValue["name"], formValue["type"], formValue["description"],setOpen,setData)
+      setNameErrorVisible(false);
+      setTypeErrorVisible(false);
+      var flag = false;
+      if (HelperFunctions.isEmpty(formValue["name"])){
+        setNameErrorVisible(true);
+        flag = true;
+      }
+      if (HelperFunctions.isEmpty(formValue["type"])){
+        setTypeErrorVisible(true);
+        flag = true;
+      }
+      if (!flag){
+        HelperFunctions.createAccount(formValue["name"], formValue["type"], formValue["description"],setOpen,setData,setFormValue);
+      }
     }
     const selectData = ['Asset', 'Income', 'Equity', 'Money', 'Liability', 'Expense'].map(item => ({
       label: item,
@@ -40,6 +60,11 @@ export default function Accounts() {
     React.useEffect(() => {
       HelperFunctions.getAccounts(setData);
     }, []);
+
+    const [nameErrorVisible, setNameErrorVisible] = React.useState(false);
+    const [typeErrorVisible, setTypeErrorVisible] = React.useState(false);
+    const nameErrorMessage = nameErrorVisible ? 'Name is required' : null;
+    const typeErrorMessage = typeErrorVisible ? 'Type is required' : null;
     return (
       <>
             <Modal overflow={true} open={open} onClose={handleClose}>
@@ -50,16 +75,16 @@ export default function Accounts() {
             <Form ref={formRef} onChange={setFormValue}>
               <Form.Group controlId="name">
                 <Form.ControlLabel>Account Name</Form.ControlLabel>
-                <Form.Control name="name" />
-                <Form.HelpText>Account Name is required</Form.HelpText>
+                <Form.Control name="name" errorMessage={nameErrorMessage}/>
               </Form.Group>
               <Form.Group controlId="type">
                 <Form.ControlLabel>Account Type:</Form.ControlLabel>
-                <Form.Control name="type" accepter={SelectPicker} data={selectData} />
+                <Form.Control name="type" accepter={SelectPicker} data={selectData} errorMessage={typeErrorMessage}/>
               </Form.Group>
               <Form.Group controlId="description">
                 <Form.ControlLabel>Account Description</Form.ControlLabel>  
                 <Form.Control rows={5} name="description" accepter={Textarea} />
+                <Form.HelpText>Account Description is not required</Form.HelpText>
               </Form.Group>
             </Form>
             </Modal.Body>
