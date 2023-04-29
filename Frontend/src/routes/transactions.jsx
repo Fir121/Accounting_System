@@ -11,8 +11,12 @@ const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea
 
 export default function Transactions() {
   const [data, setData] = React.useState([]);
+  const [data2, setData2] = React.useState([]);
     function editTransaction(transaction_id){
       console.log(transaction_id);
+    }
+    function editDescription(description_id){
+      console.log(description_id);
     }
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
@@ -31,12 +35,17 @@ export default function Transactions() {
         to: "",
     });
       setOpen(false);
+      setAmountErrorVisible(false);
+      setTypeErrorVisible(false);
+      setFromErrorVisible(false);
+      setToErrorVisible(false);
     }
     const [selectData, setSelectData] = React.useState([]);
     const [datevalue, setDateValue] = React.useState(new Date());
     const changeDateValue = (e) => {
       setDateValue(e);
       HelperFunctions.getTransactions(e, setData);
+      HelperFunctions.getDescriptions(e,setData2);
     }
     const [formValue, setFormValue] = React.useState({
         name: "",
@@ -80,6 +89,7 @@ export default function Transactions() {
 
     React.useEffect(() => {
       HelperFunctions.getTransactions(datevalue, setData);
+      HelperFunctions.getDescriptions(datevalue, setData2);
     }, []);
 
     const mystyle = {
@@ -106,11 +116,11 @@ export default function Transactions() {
 
     
     const [open2, setOpen2] = React.useState(false);
-    const handleOpen2 = () => setOpen(true);
     const handleClose2 = () => {
       setFormValue({
         description: ""
     });
+    setDescErrorVisible(false);
       setOpen2(false);
     }
     const [formValue2, setFormValue2] = React.useState({
@@ -128,7 +138,7 @@ export default function Transactions() {
         flag = true;
       }
       if (!flag){
-        HelperFunctions.setDescription(formValue2["description"],checkboxValue,setOpen2,setFormValue2,setSelectData)
+        HelperFunctions.setDescription(formValue2["description"],checkboxValue,setOpen2,setFormValue2,setSelectData,datevalue,setData2)
       }
     }
 
@@ -244,6 +254,37 @@ export default function Transactions() {
                     <td>{dataObj.to_account}</td>
                     <td>
                     <MDBBtn color='link' rounded size='sm' onClick={editTransaction(dataObj.transaction_id)}>
+                      Edit
+                    </MDBBtn>
+                  </td>
+                    </tr>
+                );
+              })}
+              
+            </MDBTableBody>
+        </MDBTable>
+        </MDBRow>
+        <MDBRow>
+
+        </MDBRow>
+        <MDBRow>
+        <MDBTable align='middle'>
+            <MDBTableHead light>
+                <tr>
+                <th scope='col'>Description</th>
+                <th scope='col'>Transaction Count</th>
+                <th></th>
+                </tr>
+            </MDBTableHead>
+            <MDBTableBody>
+            
+                {data2.map((dataObj2, index2) => {
+                return (
+                  <tr>
+                    <td>{dataObj2.description}</td>
+                    <td>{dataObj2.transaction_count}</td>
+                    <td>
+                    <MDBBtn color='link' rounded size='sm' onClick={editDescription(dataObj2.description_id)}>
                       Edit
                     </MDBBtn>
                   </td>

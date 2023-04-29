@@ -32,6 +32,8 @@ export default function Accounts() {
         type: "",
         description: "",
     });
+    setNameErrorVisible(false);
+      setTypeErrorVisible(false);
     setIsEdit({"state":false});
       setOpen(false);
     }

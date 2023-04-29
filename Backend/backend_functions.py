@@ -176,11 +176,25 @@ def create_description(description, description_links):
     description_id = data["description_id"]
     try:
         #SQL INJECTION DANGER DANGER DANGER
-        cursor.execute(f"update transaction set transaction_description_id=%s where transaction_id in {str(tuple(description_links))}", (description_id,))
+        if len(description_links) == 1:
+            final_str = "("+str(description_links[0])+")"
+        else:
+            final_str = str(tuple(description_links))
+        cursor.execute(f"update transaction set transaction_description_id=%s where transaction_id in {final_str}", (description_id,))
     except Exception as e:
         print(e)
         return return_message(mydb, cursor, False, "Could not create description")
     return return_message(mydb, cursor, True)
+
+def get_descriptions(user_id, date):
+    mydb, cursor = create_cursor()
+    try:
+        cursor.execute("select * from UserDescription where user_id=%s and transaction_date=%s",(user_id, date))
+    except Exception as e:
+        print(e)
+        return return_message(mydb, cursor, False, "Internal Sever Error")
+    data = cursor.fetchall()
+    return return_message(mydb, cursor, True, data=data)
 
 def update_description(description_id, description):
     mydb, cursor = create_cursor()

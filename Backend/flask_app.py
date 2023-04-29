@@ -101,6 +101,13 @@ def create_description(): ## SPECIAL METHOD
     description_links = data["description_links"]
     return jsonify(bf.create_description(description, description_links))
 
+@app.route('/get_descriptions', methods=['GET'])
+def get_descriptions():
+    user_id = request.args.get('user_id')
+    date = request.args.get('date')
+    return jsonify(bf.get_descriptions(user_id, date))
+
+
 @app.route('/update_description', methods=['POST'])
 def update_description():
     description_id = request.form.get('description_id')

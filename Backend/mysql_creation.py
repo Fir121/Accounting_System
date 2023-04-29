@@ -41,9 +41,15 @@ cursor.execute("""create table if not exists transaction(
 # VIEWS
 cursor.execute(""""
     CREATE VIEW UserTransaction AS
-    SELECT transaction_id, transaction_date, transaction_type, transaction_amount, a1.account_name as from_account, a2.account_name as to_account, a1.account_user_id as user_id
+    SELECT transaction_id, transaction_date, transaction_type, transaction_amount, a1.account_name as from_account, a2.account_name as to_account, a1.account_user_id as user_id, t1.transaction_description_id AS transaction_description_id
     FROM transaction t1 join account a1 on t1.transaction_from_account_id = a1.account_id
     join account a2 on t1.transaction_to_account_id = a2.account_id;
+""")
+cursor.execute(""""    
+    CREATE VIEW UserDescription as 
+    SELECT user_id, description_id, description, count(*) as transaction_count, transaction_date from usertransaction 
+    join description on description_id=transaction_description_id 
+    group by user_id,description_id,transaction_date;
 """)
 
 # TRIGGERS

@@ -98,6 +98,29 @@ export function getTransactions(transaction_date, setData){
         });
 }
 
+export function getDescriptions(date, setData){
+    date = process_date(date);
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/get_descriptions",
+        data: {"user_id":user_data["user_id"], "date":date}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    setData(data.data)
+                    return data.data;
+                }
+                else{
+                    return [];
+                    // call error
+                }
+            }).fail( function(exp) {
+                return [];
+                // call error
+        });
+}
+
 export function getAccounts(setData){
     return $.ajax({
         type: "GET",
@@ -179,7 +202,7 @@ export function isEmpty(item){
     return item === null || item === "" || item === undefined
 }
 
-export function setDescription(description,description_links,setOpen,setFormValue,setSelectData){
+export function setDescription(description,description_links,setOpen,setFormValue,setSelectData,date,setData){
     $.ajax({
         type: "POST",
         dataType:"json",
@@ -193,6 +216,7 @@ export function setDescription(description,description_links,setOpen,setFormValu
                     description:""
                 });
                 setSelectData([]);
+                getDescriptions(date,setData);
                 setOpen(false);
             }
             else{
