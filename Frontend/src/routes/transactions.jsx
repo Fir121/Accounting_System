@@ -13,11 +13,29 @@ export default function Transactions() {
   const [data, setData] = React.useState([]);
   const [data2, setData2] = React.useState([]);
     function editTransaction(transaction_id){
-      console.log(transaction_id);
+      setIsEdit({"state":true,"transaction_id":transaction_id});
+      HelperFunctions.editTransactionReader(transaction_id, setFormValue, handleOpen);
     }
+    const [isEdit, setIsEdit] = React.useState({"state":false});
+    const editStyle = {
+      display: (isEdit.state) ? "":"none"
+    }
+    function handleDelete(){
+      HelperFunctions.deleteTransaction(isEdit.transaction_id,datevalue,handleClose,setData,setData2);
+    }
+
     function editDescription(description_id){
-      console.log(description_id);
+      setIsEdit2({"state":true,"description_id":description_id});
+      HelperFunctions.editDescriptionReader(description_id, setFormValue2, setOpen2);
     }
+    const [isEdit2, setIsEdit2] = React.useState({"state":false});
+    const editStyle2 = {
+      display: (isEdit2.state) ? "":"none"
+    }
+    function handleDelete2(){
+      HelperFunctions.deleteDescription(isEdit2.description_id,datevalue,handleClose2,setData2);
+    }
+
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       HelperFunctions.getAccountsList(setSelectData);
@@ -29,11 +47,12 @@ export default function Transactions() {
 
     const handleClose = () => {
       setFormValue({
-        name: "",
-        amount: "",
+        type: "",
+        amount: 0,
         from: "",
         to: "",
     });
+    setIsEdit({"state":false});
       setOpen(false);
       setAmountErrorVisible(false);
       setTypeErrorVisible(false);
@@ -48,11 +67,23 @@ export default function Transactions() {
       HelperFunctions.getDescriptions(e,setData2);
     }
     const [formValue, setFormValue] = React.useState({
-        name: "",
-        amount: "",
+        type: "",
+        amount: 0,
         from: "",
         to: "",
     })
+    function changeFormValue(e){
+      for(var i in e){
+        formValue[i] = e[i]
+      }
+      setFormValue(formValue);
+    }
+    function changeFormValue2(e){
+      for(var i in e){
+        formValue2[i] = e[i]
+      }
+      setFormValue2(formValue2);
+    }
     const formRef = React.useRef()
 
     function handleSubmit(){
@@ -78,11 +109,16 @@ export default function Transactions() {
         flag = true;
       }
       if (!flag){
-        HelperFunctions.createTransaction(datevalue, formValue["amount"], formValue["type"], formValue["from"], formValue["to"],setOpen,setData,setFormValue)
+        if (isEdit.state){
+          HelperFunctions.editTransaction(datevalue, isEdit.transaction_id, formValue["amount"], formValue["type"], formValue["from"], formValue["to"],setData,handleClose)
+        }
+        else{
+          HelperFunctions.createTransaction(datevalue, formValue["amount"], formValue["type"], formValue["from"], formValue["to"],setData,handleClose) 
+        }
       }
     }
     
-    const inputData = ['Debit', 'Credit'].map(item => ({
+    const inputData = ['debit', 'credit'].map(item => ({
       label: item,
       value: item
     }));
@@ -116,17 +152,19 @@ export default function Transactions() {
 
     
     const [open2, setOpen2] = React.useState(false);
-    const handleClose2 = () => {
-      setFormValue({
+    const handleClose2 = (e) => {
+      setFormValue2({
         description: ""
     });
     setDescErrorVisible(false);
+    setIsEdit2({"state":false});
       setOpen2(false);
+      if (e){setCheckboxValue([]);}
+      
+      
     }
     const [formValue2, setFormValue2] = React.useState({
-        name: "",
-        type: "",
-        description: "",
+        description: ""
     })
     const formRef2 = React.useRef()
 
@@ -138,7 +176,12 @@ export default function Transactions() {
         flag = true;
       }
       if (!flag){
-        HelperFunctions.setDescription(formValue2["description"],checkboxValue,setOpen2,setFormValue2,setSelectData,datevalue,setData2)
+        if (isEdit2.state){
+          HelperFunctions.editDescription(isEdit2.description_id, formValue2["description"],handleClose2,datevalue,setData2)
+        }
+        else{
+          HelperFunctions.setDescription(formValue2["description"],checkboxValue,handleClose2,datevalue,setData2)
+        }
       }
     }
 
@@ -152,16 +195,19 @@ export default function Transactions() {
               <Modal.Title>Add Description</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Form ref={formRef2} onChange={setFormValue2}>
+            <Form ref={formRef2} onChange={changeFormValue2}>
             <Form.Group controlId="description">
                 <Form.ControlLabel>Description</Form.ControlLabel>  
-                <Form.Control rows={5} name="description" accepter={Textarea} errorMessage={descErrorMessage}/>
+                <Form.Control rows={5} name="description" accepter={Textarea} errorMessage={descErrorMessage} defaultValue={formValue2["description"]}/>
               </Form.Group>
             </Form>
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={handleSubmit2} appearance="primary">
-                Create
+                {(isEdit2.state) ? "Edit": "Create"}
+              </Button>
+              <Button onClick={handleDelete2} style={editStyle2} appearance="primary" color="red">
+                Delete
               </Button>
               <Button onClick={handleClose2} appearance="subtle">
                 Cancel
@@ -174,28 +220,31 @@ export default function Transactions() {
               <Modal.Title>Add Transaction</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Form ref={formRef} onChange={setFormValue}>
+            <Form ref={formRef} onChange={changeFormValue}>
               <Form.Group controlId="type">
                 <Form.ControlLabel>Transaction Type:</Form.ControlLabel>
-                <Form.Control name="type" accepter={InputPicker} data={inputData} errorMessage={typeErrorMessage}/>
+                <Form.Control name="type" accepter={InputPicker} data={inputData} errorMessage={typeErrorMessage} defaultValue={formValue["type"]}/>
               </Form.Group>
               <Form.Group controlId="amount">
                 <Form.ControlLabel>Transaction Amount:</Form.ControlLabel>
-                <Form.Control name="amount" accepter={InputNumber} defaultValue={0} step={0.01} errorMessage={amountErrorMessage}/>
+                <Form.Control name="amount" accepter={InputNumber} step={0.01} errorMessage={amountErrorMessage} defaultValue={formValue["amount"]}/>
               </Form.Group>
               <Form.Group controlId="from">
                 <Form.ControlLabel>From Account:</Form.ControlLabel>
-                <Form.Control name="from" accepter={SelectPicker} data={selectData} errorMessage={fromErrorMessage}/>
+                <Form.Control name="from" accepter={SelectPicker} data={selectData} errorMessage={fromErrorMessage} defaultValue={formValue["from"]}/>
               </Form.Group>
               <Form.Group controlId="to">
                 <Form.ControlLabel>To Account:</Form.ControlLabel>
-                <Form.Control name="to" accepter={SelectPicker} data={selectData} errorMessage={toErrorMessage}/>
+                <Form.Control name="to" accepter={SelectPicker} data={selectData} errorMessage={toErrorMessage} defaultValue={formValue["to"]}/>
               </Form.Group>
             </Form>
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={handleSubmit} appearance="primary">
-                Create
+                {(isEdit.state) ? "Edit": "Create"}
+              </Button>
+              <Button onClick={handleDelete} style={editStyle} appearance="primary" color="red">
+                Delete
               </Button>
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
@@ -253,7 +302,7 @@ export default function Transactions() {
                     <td>{dataObj.from_account}</td>
                     <td>{dataObj.to_account}</td>
                     <td>
-                    <MDBBtn color='link' rounded size='sm' onClick={editTransaction(dataObj.transaction_id)}>
+                    <MDBBtn color='link' rounded size='sm' onClick={()=>{editTransaction(dataObj.transaction_id)}}>
                       Edit
                     </MDBBtn>
                   </td>
@@ -284,7 +333,7 @@ export default function Transactions() {
                     <td>{dataObj2.description}</td>
                     <td>{dataObj2.transaction_count}</td>
                     <td>
-                    <MDBBtn color='link' rounded size='sm' onClick={editDescription(dataObj2.description_id)}>
+                    <MDBBtn color='link' rounded size='sm' onClick={()=>{editDescription(dataObj2.description_id)}}>
                       Edit
                     </MDBBtn>
                   </td>

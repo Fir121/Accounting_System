@@ -1,6 +1,8 @@
 import mysql.connector as ms
 from passwords import *
 
+# do basic input validations
+
 def create_cursor():
     mydb = ms.connect(host='localhost', user='root', password=mysqlpass, database="accounting", autocommit=True)
     cursor = mydb.cursor(dictionary=True, buffered=True)
@@ -146,7 +148,7 @@ def update_transaction(transaction_id, transaction_type, transaction_amount, tra
     mydb, cursor = create_cursor()
     try:
         cursor.execute("update transaction set transaction_type=%s, transaction_amount=%s, transaction_from_account_id=%s, transaction_to_account_id=%s where transaction_id=%s", (transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id, transaction_id))
-    except:
+    except Exception as e:
         return return_message(mydb, cursor, False, "Could not update transaction")
     return return_message(mydb, cursor, True)
 
@@ -199,7 +201,7 @@ def get_descriptions(user_id, date):
 def update_description(description_id, description):
     mydb, cursor = create_cursor()
     try:
-        cursor.execute("update description set description%s where description_id=%s", (description, description_id))
+        cursor.execute("update description set description=%s where description_id=%s", (description, description_id))
     except:
         return return_message(mydb, cursor, False, "Could not update description")
     return return_message(mydb, cursor, True)
@@ -212,3 +214,14 @@ def delete_description(description_id):
         return return_message(mydb, cursor, False, "Internal Sever Error")
     return return_message(mydb, cursor, True)
 
+
+def read_description(description_id):
+    mydb, cursor = create_cursor()
+    try:
+        cursor.execute("select * from description where description_id=%s",(description_id,))
+    except:
+        return return_message(mydb, cursor, False, "Internal Sever Error")
+    data = cursor.fetchone()
+    if data is None:
+        return return_message(mydb, cursor, False, "description does not Exist")
+    return return_message(mydb, cursor, True, data=data)

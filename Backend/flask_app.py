@@ -107,6 +107,11 @@ def get_descriptions():
     date = request.args.get('date')
     return jsonify(bf.get_descriptions(user_id, date))
 
+@app.route('/read_description', methods=['GET'])
+def read_description():
+    description_id = request.args.get('description_id')
+    return jsonify(bf.read_description(description_id))
+
 
 @app.route('/update_description', methods=['POST'])
 def update_description():

@@ -143,6 +143,37 @@ export function getAccounts(setData){
         });
 }
 
+export function editTransactionReader(transaction_id, setFormValue, handleOpen){
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/read_transaction",
+        data: {"transaction_id":transaction_id}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    if (data.data.transaction_description === null){
+                        data.data.transaction_description = "";
+                    }
+                    setFormValue({
+                        type: data.data.transaction_type,
+                        amount: data.data.transaction_amount,
+                        from: data.data.transaction_from_account_id,
+                        to: data.data.transaction_to_account_id,
+                    });
+                    handleOpen();
+                    return data.data;
+                }
+                else{
+                    return [];
+                    // call error
+                }
+            }).fail( function(exp) {
+                return [];
+                // call error
+        });
+}
+
 export function editAccountReader(account_id, setFormValue, setOpen){
     return $.ajax({
         type: "GET",
@@ -159,6 +190,34 @@ export function editAccountReader(account_id, setFormValue, setOpen){
                         name: data.data.account_name,
                         type: data.data.account_type,
                         description: data.data.account_description,
+                      });
+                    setOpen(true);
+                    return data.data;
+                }
+                else{
+                    return [];
+                    // call error
+                }
+            }).fail( function(exp) {
+                return [];
+                // call error
+        });
+}
+
+export function editDescriptionReader(description_id, setFormValue, setOpen){
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/read_description",
+        data: {"description_id":description_id}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    if (data.data.description === null){
+                        data.data.description = "";
+                    }
+                    setFormValue({
+                        description: data.data.description,
                       });
                     setOpen(true);
                     return data.data;
@@ -202,7 +261,7 @@ export function isEmpty(item){
     return item === null || item === "" || item === undefined
 }
 
-export function setDescription(description,description_links,setOpen,setFormValue,setSelectData,date,setData){
+export function setDescription(description,description_links,handleClose,date,setData){
     $.ajax({
         type: "POST",
         dataType:"json",
@@ -212,12 +271,8 @@ export function setDescription(description,description_links,setOpen,setFormValu
         success: function(data) {
             console.log(data);
             if (data.status == 1){
-                setFormValue({
-                    description:""
-                });
-                setSelectData([]);
                 getDescriptions(date,setData);
-                setOpen(false);
+                handleClose(true);
             }
             else{
                 // call error
@@ -229,7 +284,28 @@ export function setDescription(description,description_links,setOpen,setFormValu
     });
 }
 
-export function createTransaction(transaction_date, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setOpen,setData,setFormValue){
+export function editDescription(description_id,description,handleClose,date,setData){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/update_description",
+        data: {"description":description,"description_id":description_id},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getDescriptions(date,setData);
+                handleClose(false);
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+}
+export function createTransaction(transaction_date, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setData,handleClose){
     var old_date_obj = transaction_date
     transaction_date = process_date(transaction_date);
     $.ajax({
@@ -241,13 +317,29 @@ export function createTransaction(transaction_date, transaction_amount, transact
             console.log(data);
             if (data.status == 1){
                 getTransactions(old_date_obj, setData);
-                setFormValue({
-                    name: "",
-                    amount: "",
-                    from: "",
-                    to: "",
-                });
-                setOpen(false);
+                handleClose();
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+}
+
+export function editTransaction(date,transaction_id, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setData,handleClose){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/update_transaction",
+        data: {"transaction_id":transaction_id,"transaction_amount":transaction_amount,"transaction_type":transaction_type,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getTransactions(date, setData);
+                handleClose();
             }
             else{
                 // call error
@@ -313,6 +405,51 @@ export function deleteAccount(account_id,handleClose,setData){
             console.log(data);
             if (data.status == 1){
                 getAccounts(setData);
+                handleClose();
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+}
+
+export function deleteTransaction(transaction_id,date,handleClose,setData,setData2){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/delete_transaction",
+        data: {"transaction_id":transaction_id},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getTransactions(date, setData);
+                getDescriptions(date, setData2);
+                handleClose();
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+}
+
+export function deleteDescription(description_id,date,handleClose,setData){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/delete_description",
+        data: {"description_id":description_id},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getDescriptions(date, setData);
                 handleClose();
             }
             else{
