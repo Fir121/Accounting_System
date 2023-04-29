@@ -10,14 +10,19 @@ const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea
 
 export default function Accounts() {
     const [data, setData] = React.useState([]);
-    function editAccount(account_id){
-      console.log(account_id);
+    function editAccountLocal(account_id){
+      setIsEdit({"state":true,"account_id":account_id});
+      HelperFunctions.editAccountReader(account_id, setFormValue, setOpen);
     }
     
     const mystyle = {
         backgroundColor: '#55acee',
         'boxShadow': 'none',
       };
+
+    function handleDelete(){
+      HelperFunctions.deleteAccount(isEdit.account_id,handleClose,setData);
+    }
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -27,6 +32,7 @@ export default function Accounts() {
         type: "",
         description: "",
     });
+    setIsEdit({"state":false});
       setOpen(false);
     }
     const [formValue, setFormValue] = React.useState({
@@ -34,11 +40,19 @@ export default function Accounts() {
         type: "",
         description: "",
     })
+
+    function changeFormValue(e){
+      for(var i in e){
+        formValue[i] = e[i]
+      }
+      setFormValue(formValue);
+    }
     const formRef = React.useRef()
 
     function handleSubmit(){
       setNameErrorVisible(false);
       setTypeErrorVisible(false);
+      console.log(formValue);
       var flag = false;
       if (HelperFunctions.isEmpty(formValue["name"])){
         setNameErrorVisible(true);
@@ -49,13 +63,23 @@ export default function Accounts() {
         flag = true;
       }
       if (!flag){
-        HelperFunctions.createAccount(formValue["name"], formValue["type"], formValue["description"],setOpen,setData,setFormValue);
+        if (isEdit.state){
+          HelperFunctions.editAccount(isEdit.account_id,formValue["name"], formValue["type"], formValue["description"],handleClose,setData);
+        }
+        else{
+          HelperFunctions.createAccount(formValue["name"], formValue["type"], formValue["description"],handleClose,setData);
+        }
       }
     }
     const selectData = ['Asset', 'Income', 'Equity', 'Money', 'Liability', 'Expense'].map(item => ({
       label: item,
       value: item
     }));
+
+    const [isEdit, setIsEdit] = React.useState({"state":false});
+    const editStyle = {
+      display: (isEdit.state) ? "":"none"
+    }
 
     React.useEffect(() => {
       HelperFunctions.getAccounts(setData);
@@ -72,25 +96,28 @@ export default function Accounts() {
               <Modal.Title>Add Account</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Form ref={formRef} onChange={setFormValue}>
+            <Form ref={formRef} onChange={changeFormValue}>
               <Form.Group controlId="name">
                 <Form.ControlLabel>Account Name</Form.ControlLabel>
-                <Form.Control name="name" errorMessage={nameErrorMessage}/>
+                <Form.Control name="name" errorMessage={nameErrorMessage} defaultValue={formValue["name"]}/>
               </Form.Group>
               <Form.Group controlId="type">
                 <Form.ControlLabel>Account Type:</Form.ControlLabel>
-                <Form.Control name="type" accepter={SelectPicker} data={selectData} errorMessage={typeErrorMessage}/>
+                <Form.Control name="type" accepter={SelectPicker} data={selectData} errorMessage={typeErrorMessage} defaultValue={formValue["type"]}/>
               </Form.Group>
               <Form.Group controlId="description">
                 <Form.ControlLabel>Account Description</Form.ControlLabel>  
-                <Form.Control rows={5} name="description" accepter={Textarea} />
+                <Form.Control rows={5} name="description" accepter={Textarea} defaultValue={formValue["description"]}/>
                 <Form.HelpText>Account Description is not required</Form.HelpText>
               </Form.Group>
             </Form>
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={handleSubmit} appearance="primary">
-                Create
+                {(isEdit.state) ? "Edit": "Create"}
+              </Button>
+              <Button onClick={handleDelete} style={editStyle} appearance="primary" color="red">
+                Delete
               </Button>
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
@@ -138,7 +165,7 @@ export default function Accounts() {
                 </MDBBadge>
               </td>
               <td>
-                <MDBBtn color='link' rounded size='sm' onClick={editAccount(dataObj.account_id)}>
+                <MDBBtn color='link' rounded size='sm' onClick={()=>{editAccountLocal(dataObj.account_id)}}>
                   Edit
                 </MDBBtn>
               </td>

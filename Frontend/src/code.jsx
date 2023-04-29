@@ -120,6 +120,36 @@ export function getAccounts(setData){
         });
 }
 
+export function editAccountReader(account_id, setFormValue, setOpen){
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/read_account",
+        data: {"account_id":account_id}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    if (data.data.account_description === null){
+                        data.data.account_description = "";
+                    }
+                    setFormValue({
+                        name: data.data.account_name,
+                        type: data.data.account_type,
+                        description: data.data.account_description,
+                      });
+                    setOpen(true);
+                    return data.data;
+                }
+                else{
+                    return [];
+                    // call error
+                }
+            }).fail( function(exp) {
+                return [];
+                // call error
+        });
+}
+
 export function getAccountsList(setSelectData){
     return $.ajax({
         type: "GET",
@@ -205,7 +235,29 @@ export function createTransaction(transaction_date, transaction_amount, transact
     });
 }
 
-export function createAccount(account_name, account_type, account_description,setOpen,setData,setFormValue){
+export function editAccount(account_id, account_name, account_type, account_description,handleClose,setData){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/update_account",
+        data: {"account_id":account_id,"account_name":account_name,"account_type":account_type,"account_description":account_description,"account_user_id":user_data["user_id"]},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getAccounts(setData);
+                handleClose();
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+}
+
+export function createAccount(account_name, account_type, account_description,handleClose,setData){
     $.ajax({
         type: "POST",
         dataType:"json",
@@ -215,12 +267,29 @@ export function createAccount(account_name, account_type, account_description,se
             console.log(data);
             if (data.status == 1){
                 getAccounts(setData);
-                setFormValue({
-                    name: "",
-                    type: "",
-                    description: "",
-                });
-                setOpen(false);
+                handleClose();
+            }
+            else{
+                // call error
+            }
+        },
+        error: function(exp) {
+            // call error
+        }
+    });
+}
+
+export function deleteAccount(account_id,handleClose,setData){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/delete_account",
+        data: {"account_id":account_id},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                getAccounts(setData);
+                handleClose();
             }
             else{
                 // call error
