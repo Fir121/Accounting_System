@@ -49,6 +49,11 @@ export default function Root() {
       HelperFunctions.redirect("login")
       return <></>
     }
+
+    function signOut(){
+      localStorage.clear(); 
+      HelperFunctions.redirect("login");
+    }
     
 
     function handleActiveKey(e){
@@ -72,7 +77,7 @@ export default function Root() {
             <Navbar.Brand>
               <a style={{ color: '#fff' }}>Company Name</a>
             </Navbar.Brand>
-            <Nav pullRight>
+            <Nav pullRight onClick={signOut}>
               <Nav.Item icon={<ExitIcon />}>Sign Out</Nav.Item>
             </Nav>
           </Navbar>

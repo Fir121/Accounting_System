@@ -47,7 +47,6 @@ export default function Transactions() {
 
     const handleClose = () => {
       setFormValue({
-        type: "",
         amount: 0,
         from: "",
         to: "",
@@ -55,7 +54,6 @@ export default function Transactions() {
     setIsEdit({"state":false});
       setOpen(false);
       setAmountErrorVisible(false);
-      setTypeErrorVisible(false);
       setFromErrorVisible(false);
       setToErrorVisible(false);
     }
@@ -67,7 +65,6 @@ export default function Transactions() {
       HelperFunctions.getDescriptions(e,setData2);
     }
     const [formValue, setFormValue] = React.useState({
-        type: "",
         amount: 0,
         from: "",
         to: "",
@@ -88,14 +85,9 @@ export default function Transactions() {
 
     function handleSubmit(){
       setAmountErrorVisible(false);
-      setTypeErrorVisible(false);
       setFromErrorVisible(false);
       setToErrorVisible(false);
       var flag = false;
-      if (HelperFunctions.isEmpty(formValue["type"])){
-        setTypeErrorVisible(true);
-        flag = true;
-      }
       if (HelperFunctions.isEmpty(formValue["amount"])){
         setAmountErrorVisible(true);
         flag = true;
@@ -110,18 +102,13 @@ export default function Transactions() {
       }
       if (!flag){
         if (isEdit.state){
-          HelperFunctions.editTransaction(datevalue, isEdit.transaction_id, formValue["amount"], formValue["type"], formValue["from"], formValue["to"],setData,handleClose)
+          HelperFunctions.editTransaction(datevalue, isEdit.transaction_id, formValue["amount"], formValue["from"], formValue["to"],setData,handleClose)
         }
         else{
-          HelperFunctions.createTransaction(datevalue, formValue["amount"], formValue["type"], formValue["from"], formValue["to"],setData,handleClose) 
+          HelperFunctions.createTransaction(datevalue, formValue["amount"], formValue["from"], formValue["to"],setData,handleClose) 
         }
       }
     }
-    
-    const inputData = ['debit', 'credit'].map(item => ({
-      label: item,
-      value: item
-    }));
 
     React.useEffect(() => {
       HelperFunctions.getTransactions(datevalue, setData);
@@ -141,11 +128,9 @@ export default function Transactions() {
       };
     const styles = { width: 200, display: 'block', marginBottom: 10 };
 
-    const [typeErrorVisible, setTypeErrorVisible] = React.useState(false);
     const [amountErrorVisible, setAmountErrorVisible] = React.useState(false);
     const [fromErrorVisible, setFromErrorVisible] = React.useState(false);
     const [toErrorVisible, setToErrorVisible] = React.useState(false);
-    const typeErrorMessage = typeErrorVisible ? 'Type is required' : null;
     const amountErrorMessage = amountErrorVisible ? 'Amount is required' : null;
     const fromErrorMessage = fromErrorVisible ? 'From is required' : null;
     const toErrorMessage = toErrorVisible ? 'To is required' : null;
@@ -221,10 +206,6 @@ export default function Transactions() {
             </Modal.Header>
             <Modal.Body>
             <Form ref={formRef} onChange={changeFormValue}>
-              <Form.Group controlId="type">
-                <Form.ControlLabel>Transaction Type:</Form.ControlLabel>
-                <Form.Control name="type" accepter={InputPicker} data={inputData} errorMessage={typeErrorMessage} defaultValue={formValue["type"]}/>
-              </Form.Group>
               <Form.Group controlId="amount">
                 <Form.ControlLabel>Transaction Amount:</Form.ControlLabel>
                 <Form.Control name="amount" accepter={InputNumber} step={0.01} errorMessage={amountErrorMessage} defaultValue={formValue["amount"]}/>
@@ -278,7 +259,6 @@ export default function Transactions() {
                     
                 </th>
                 <th scope='col'>Amount</th>
-                <th scope='col'>Type</th>
                 <th scope='col'>From Account</th>
                 <th scope='col'>To Account</th>
                 <th></th> 
@@ -298,7 +278,6 @@ export default function Transactions() {
                         </CheckboxGroup>
                     </th>
                     <td>{dataObj.transaction_amount}</td>
-                    <td>{dataObj.transaction_type}</td>
                     <td>{dataObj.from_account}</td>
                     <td>{dataObj.to_account}</td>
                     <td>

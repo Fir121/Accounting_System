@@ -115,10 +115,10 @@ def delete_account(account_id):
     return return_message(mydb, cursor, True)
 
 #### TRANSACTIONS
-def create_transaction(transaction_date, transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id):
+def create_transaction(transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id):
     mydb, cursor = create_cursor()
     try:
-        cursor.execute("insert into transaction(transaction_date, transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id) values(%s, %s, %s, %s, %s)", (transaction_date, transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id))
+        cursor.execute("insert into transaction(transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id) values(%s, %s, %s, %s, %s)", (transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id))
     except:
         return return_message(mydb, cursor, False, "Could not create transaction")
     return return_message(mydb, cursor, True)
@@ -144,10 +144,10 @@ def get_transactions(user_id, transaction_date):
     data = cursor.fetchall()
     return return_message(mydb, cursor, True, data=data)
 
-def update_transaction(transaction_id, transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id):
+def update_transaction(transaction_id, transaction_amount, transaction_from_account_id, transaction_to_account_id):
     mydb, cursor = create_cursor()
     try:
-        cursor.execute("update transaction set transaction_type=%s, transaction_amount=%s, transaction_from_account_id=%s, transaction_to_account_id=%s where transaction_id=%s", (transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id, transaction_id))
+        cursor.execute("update transaction set transaction_amount=%s, transaction_from_account_id=%s, transaction_to_account_id=%s where transaction_id=%s", (transaction_amount, transaction_from_account_id, transaction_to_account_id, transaction_id))
     except Exception as e:
         return return_message(mydb, cursor, False, "Could not update transaction")
     return return_message(mydb, cursor, True)

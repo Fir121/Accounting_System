@@ -156,7 +156,6 @@ export function editTransactionReader(transaction_id, setFormValue, handleOpen){
                         data.data.transaction_description = "";
                     }
                     setFormValue({
-                        type: data.data.transaction_type,
                         amount: data.data.transaction_amount,
                         from: data.data.transaction_from_account_id,
                         to: data.data.transaction_to_account_id,
@@ -305,14 +304,14 @@ export function editDescription(description_id,description,handleClose,date,setD
         }
     });
 }
-export function createTransaction(transaction_date, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setData,handleClose){
+export function createTransaction(transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id, setData,handleClose){
     var old_date_obj = transaction_date
     transaction_date = process_date(transaction_date);
     $.ajax({
         type: "POST",
         dataType:"json",
         url: base_url+"/create_transaction",
-        data: {"transaction_date":transaction_date,"transaction_amount":transaction_amount,"transaction_type":transaction_type,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
+        data: {"transaction_date":transaction_date,"transaction_amount":transaction_amount,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
         success: function(data) {
             console.log(data);
             if (data.status == 1){
@@ -329,12 +328,12 @@ export function createTransaction(transaction_date, transaction_amount, transact
     });
 }
 
-export function editTransaction(date,transaction_id, transaction_amount, transaction_type, transaction_from_account_id, transaction_to_account_id, setData,handleClose){
+export function editTransaction(date,transaction_id, transaction_amount, transaction_from_account_id, transaction_to_account_id, setData,handleClose){
     $.ajax({
         type: "POST",
         dataType:"json",
         url: base_url+"/update_transaction",
-        data: {"transaction_id":transaction_id,"transaction_amount":transaction_amount,"transaction_type":transaction_type,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
+        data: {"transaction_id":transaction_id,"transaction_amount":transaction_amount,"transaction_from_account_id":transaction_from_account_id, "transaction_to_account_id":transaction_to_account_id},
         success: function(data) {
             console.log(data);
             if (data.status == 1){

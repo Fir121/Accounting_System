@@ -27,7 +27,6 @@ cursor.execute("""create table if not exists description(
 cursor.execute("""create table if not exists transaction(
                transaction_id int auto_increment not null,
                transaction_date date not null,
-               transaction_type ENUM('debit','credit') not null,
                transaction_amount double not null,
                transaction_from_account_id int not null,
                transaction_to_account_id int not null,
@@ -41,7 +40,7 @@ cursor.execute("""create table if not exists transaction(
 # VIEWS
 cursor.execute(""""
     CREATE VIEW UserTransaction AS
-    SELECT transaction_id, transaction_date, transaction_type, transaction_amount, a1.account_name as from_account, a2.account_name as to_account, a1.account_user_id as user_id, t1.transaction_description_id AS transaction_description_id
+    SELECT transaction_id, transaction_date, transaction_amount, a1.account_name as from_account, a2.account_name as to_account, a1.account_user_id as user_id, t1.transaction_description_id AS transaction_description_id
     FROM transaction t1 join account a1 on t1.transaction_from_account_id = a1.account_id
     join account a2 on t1.transaction_to_account_id = a2.account_id;
 """)
@@ -68,3 +67,51 @@ END
 # DELIMITER ;
 
 # TODO TRIGGER TO ENSURE NO OVERWRITING OF DESCRIPTION BY ACCIDENT
+
+
+# Restricts when from and to are different
+# DELIMITER $$
+cursor.execute("""
+CREATE TRIGGER descriptionIdCounter
+BEFORE UPDATE
+ON transaction FOR EACH ROW
+BEGIN
+	DECLARE x INT;
+	DECLARE from_transaction INT;
+	DECLARE to_transaction INT;
+	DECLARE from_transaction_id INT;
+	DECLARE to_transaction_id INT;
+    DECLARE flag INT;
+    SET flag=0;
+    IF (NOT new.transaction_description_id <=> old.transaction_description_id and new.transaction_description_id is not null) THEN
+		SET x = (select count(*) from transaction join description on transaction_description_id=description_id where description_id=new.transaction_description_id);
+        IF (x <=> 0) THEN
+			 SET flag = 1;
+        END IF;
+        IF (x > 0) THEN
+            SET from_transaction = (select count(distinct transaction_from_account_id) from transaction join description on transaction_description_id=description_id where description_id=new.transaction_description_id);
+            SET to_transaction = (select count(distinct transaction_to_account_id) from transaction join description on transaction_description_id=description_id where description_id=new.transaction_description_id);
+			IF (from_transaction <=> 1) THEN
+                SET from_transaction_id = (select distinct transaction_from_account_id from transaction join description on transaction_description_id=description_id where description_id=new.transaction_description_id);
+				IF (from_transaction_id <=> new.transaction_from_account_id) THEN
+					SET flag = 1;
+				END IF;
+			END IF;
+			IF (to_transaction <=> 1) THEN
+                SET to_transaction_id = (select distinct transaction_to_account_id from transaction join description on transaction_description_id=description_id where description_id=new.transaction_description_id);
+				IF (to_transaction_id <=> new.transaction_to_account_id) THEN
+					SET flag = 1;
+				END IF;
+			END IF;
+		END IF;
+	ELSE
+		set flag=1;
+    END IF;
+    
+    IF (flag <=> 0) THEN
+		signal sqlstate '45000' set message_text = 'Cannot set description as from or to accounts are not the same';
+	END IF;
+END
+""")
+# $$
+# DELIMITER ;

@@ -63,11 +63,10 @@ def delete_account():
 @app.route('/create_transaction', methods=['POST'])
 def create_transaction():
     transaction_date = request.form.get("transaction_date")
-    transaction_type = request.form.get("transaction_type")
     transaction_amount = request.form.get("transaction_amount")
     transaction_from_account_id = request.form.get("transaction_from_account_id")
     transaction_to_account_id = request.form.get("transaction_to_account_id")
-    return jsonify(bf.create_transaction(transaction_date, transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id))
+    return jsonify(bf.create_transaction(transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id))
 
 @app.route('/read_transaction', methods=['GET'])
 def read_transaction():
@@ -83,11 +82,10 @@ def get_transactions():
 @app.route('/update_transaction', methods=['POST'])
 def update_transaction():
     transaction_id = request.form.get("transaction_id")
-    transaction_type = request.form.get("transaction_type")
     transaction_amount = request.form.get("transaction_amount")
     transaction_from_account_id = request.form.get("transaction_from_account_id")
     transaction_to_account_id = request.form.get("transaction_to_account_id")
-    return jsonify(bf.update_transaction(transaction_id, transaction_type, transaction_amount, transaction_from_account_id, transaction_to_account_id))
+    return jsonify(bf.update_transaction(transaction_id, transaction_amount, transaction_from_account_id, transaction_to_account_id))
 
 @app.route('/delete_transaction', methods=['POST'])
 def delete_transaction():
