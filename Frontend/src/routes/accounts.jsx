@@ -139,7 +139,7 @@ export default function Accounts() {
         <MDBRow><div style={{visibility:'hidden'}}>ABC</div></MDBRow>
         <MDBRow>
         <MDBTable align='middle'>
-          <MDBTableHead>
+          <MDBTableHead dark>
             <tr>
               <th scope='col'>Name</th>
               <th scope='col'>Type</th>
@@ -147,7 +147,7 @@ export default function Accounts() {
               <th></th>
             </tr>
           </MDBTableHead>
-          <MDBTableBody>
+          <MDBTableBody className='tablebody'>
           {data.map((dataObj, index) => {
             return (
               <tr>

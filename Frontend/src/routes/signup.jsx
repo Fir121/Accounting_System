@@ -28,9 +28,9 @@ export default function Signup() {
     return (
             <Container>
                 <Header>
-                <Navbar appearance="inverse">
+                <Navbar appearance="inverse" style={{ backgroundColor: '#18191c' }}>
                     <Navbar.Brand>
-                    <a style={{ color: '#fff' }}>TCF Accounting</a>
+                    <a style={{fontWeight:"bolder",color:"#ac1c24",fontSize:"20px"}}>TCF Accounting</a>
                     </Navbar.Brand>
                     <Nav pullRight>
                     <Nav.Item icon={<PeopleBranchIcon />} href="/login">Log In</Nav.Item>
@@ -63,7 +63,7 @@ export default function Signup() {
                                     <Form.Group>
                                         <ButtonToolbar>
                                             <Button appearance="primary"
-                                                color="green" type="submit">
+                                                color="blue" type="submit">
                                                 Sign Up
                                             </Button>
                                         </ButtonToolbar>

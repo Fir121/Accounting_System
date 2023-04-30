@@ -1,3 +1,31 @@
+#root{
+  background-color: #1a1d24;
+  color: #f0f0f0 !important;
+}
+h1,h2,h3,h4{
+  color:#6e1318 !important;
+}
+h5,h6{
+  color:#2596be !important;
+}
+
+.tablebody{
+  color: #f0f0f0
+}
+
+.rs-picker-date-menu{
+  color:black !important;
+}
+
+.rs-modal-content{
+  background-color: #1d2025 !important;
+}
+
+.rs-modal-content h4{
+  font-size: larger !important;
+  font-weight: bolder !important;
+}
+
 html {
   box-sizing: border-box;
 }
@@ -11,6 +39,7 @@ body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #121212 !important;
 }
 
 html,
@@ -18,7 +47,7 @@ body {
   height: 100%;
   margin: 0;
   line-height: 1.5;
-  color: #121212;
+  color: #f0f0f0 !important;
 }
 
 a{

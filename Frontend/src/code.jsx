@@ -1,11 +1,30 @@
 import $ from "jquery";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 let user_data = {}
 const base_url = "http://127.0.0.1:5000";
+const MySwal = withReactContent(Swal)
 
 function saveToLocalStorage(){
     localStorage.setItem('user_id', user_data["user_id"]);
     localStorage.setItem('user_company_name', user_data["user_company_name"]);
+}
+
+function displayError(msg){
+    if (msg === null || msg === undefined){
+        msg = "Server Error";
+        MySwal.fire({
+            title: <p>Something Went Wrong</p>,
+            icon: 'error',
+            text: msg,
+        });
+        return;
+    }
+    MySwal.fire({
+        icon: 'warning',
+        text: msg,
+    });
 }
 
 export function redirect(loc){
@@ -37,11 +56,11 @@ export function login(user_company_name){
                 redirect("dashboard")
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -59,11 +78,11 @@ export function signup(user_company_name){
                 redirect("dashboard")
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -89,12 +108,12 @@ export function getTransactions(transaction_date, setData){
                     return data.data;
                 }
                 else{
+                    displayError(data.description);
                     return [];
-                    // call error
                 }
             }).fail( function(exp) {
+                displayError();
                 return [];
-                // call error
         });
 }
 
@@ -112,12 +131,12 @@ export function getDescriptions(date, setData){
                     return data.data;
                 }
                 else{
+                    displayError(data.description);
                     return [];
-                    // call error
                 }
             }).fail( function(exp) {
+                displayError();
                 return [];
-                // call error
         });
 }
 
@@ -134,12 +153,12 @@ export function getAccounts(setData){
                     return data.data;
                 }
                 else{
+                    displayError(data.description);
                     return [];
-                    // call error
                 }
             }).fail( function(exp) {
+                displayError();
                 return [];
-                // call error
         });
 }
 
@@ -164,12 +183,12 @@ export function editTransactionReader(transaction_id, setFormValue, handleOpen){
                     return data.data;
                 }
                 else{
+                    displayError(data.description);
                     return [];
-                    // call error
                 }
             }).fail( function(exp) {
+                displayError();
                 return [];
-                // call error
         });
 }
 
@@ -194,12 +213,12 @@ export function editAccountReader(account_id, setFormValue, setOpen){
                     return data.data;
                 }
                 else{
+                    displayError(data.description);
                     return [];
-                    // call error
                 }
             }).fail( function(exp) {
+                displayError();
                 return [];
-                // call error
         });
 }
 
@@ -222,12 +241,12 @@ export function editDescriptionReader(description_id, setFormValue, setOpen){
                     return data.data;
                 }
                 else{
+                    displayError(data.description);
                     return [];
-                    // call error
                 }
             }).fail( function(exp) {
+                displayError();
                 return [];
-                // call error
         });
 }
 
@@ -247,12 +266,12 @@ export function getAccountsList(setSelectData){
                     return data.data;
                 }
                 else{
+                    displayError(data.description);
                     return [];
-                    // call error
                 }
             }).fail( function(exp) {
+                displayError();
                 return [];
-                // call error
         });
 }
 
@@ -274,11 +293,11 @@ export function setDescription(description,description_links,handleClose,date,se
                 handleClose(true);
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -296,11 +315,11 @@ export function editDescription(description_id,description,handleClose,date,setD
                 handleClose(false);
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -319,11 +338,11 @@ export function createTransaction(transaction_date, transaction_amount, transact
                 handleClose();
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -341,11 +360,11 @@ export function editTransaction(date,transaction_id, transaction_amount, transac
                 handleClose();
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -363,11 +382,11 @@ export function editAccount(account_id, account_name, account_type, account_desc
                 handleClose();
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -385,11 +404,11 @@ export function createAccount(account_name, account_type, account_description,ha
                 handleClose();
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -407,11 +426,11 @@ export function deleteAccount(account_id,handleClose,setData){
                 handleClose();
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -430,11 +449,11 @@ export function deleteTransaction(transaction_id,date,handleClose,setData,setDat
                 handleClose();
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }
@@ -452,11 +471,11 @@ export function deleteDescription(description_id,date,handleClose,setData){
                 handleClose();
             }
             else{
-                // call error
+                displayError(data.description);
             }
         },
         error: function(exp) {
-            // call error
+            displayError();
         }
     });
 }

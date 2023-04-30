@@ -73,9 +73,9 @@ export default function Root() {
       <>
       <Container>
         <Header>
-          <Navbar appearance="inverse">
+          <Navbar appearance="inverse" style={{ backgroundColor: '#18191c' }}>
             <Navbar.Brand>
-              <a style={{ color: '#fff' }}>Company Name</a>
+              <a style={{fontWeight:"bolder",color:"#ac1c24",fontSize:"20px"}}>TCF Accounting</a>
             </Navbar.Brand>
             <Nav pullRight onClick={signOut}>
               <Nav.Item icon={<ExitIcon />}>Sign Out</Nav.Item>
@@ -84,7 +84,7 @@ export default function Root() {
         </Header>
         <Container>
           <Sidebar
-            style={{ display: 'flex', flexDirection: 'column', backgroundColor:'#f2f2f2' }}
+            style={{ display: 'flex', flexDirection: 'column', backgroundColor:'#272b36' }}
             width={expand ? 260 : 56}
             collapsible
           >

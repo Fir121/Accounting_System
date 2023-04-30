@@ -249,11 +249,11 @@ export default function Transactions() {
         <MDBRow>
         <MDBRow>
         <MDBCol start></MDBCol>
-        <MDBCol size="auto" center><DatePicker size="lg" placeholder="Large" style={styles} value={datevalue} onChange={changeDateValue} /></MDBCol>
+        <MDBCol size="auto" center><DatePicker size="lg" appearance="default" placeholder="Large" style={styles} value={datevalue} onChange={changeDateValue} /></MDBCol>
         <MDBCol end></MDBCol>
         </MDBRow>
         <MDBTable align='middle'>
-            <MDBTableHead light>
+            <MDBTableHead dark>
                 <tr>
                 <th scope='col'>
                     
@@ -264,7 +264,7 @@ export default function Transactions() {
                 <th></th> 
                 </tr>
             </MDBTableHead>
-            <MDBTableBody>
+            <MDBTableBody className='tablebody'>
             
                 {data.map((dataObj, index) => {
                 return (
@@ -297,14 +297,14 @@ export default function Transactions() {
         </MDBRow>
         <MDBRow>
         <MDBTable align='middle'>
-            <MDBTableHead light>
+            <MDBTableHead dark>
                 <tr>
                 <th scope='col'>Description</th>
                 <th scope='col'>Transaction Count</th>
                 <th></th>
                 </tr>
             </MDBTableHead>
-            <MDBTableBody>
+            <MDBTableBody className='tablebody'>
             
                 {data2.map((dataObj2, index2) => {
                 return (
