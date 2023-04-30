@@ -12,6 +12,7 @@ import Accounts from "./routes/accounts";
 import Transactions from "./routes/transactions";
 import Login from "./routes/login";
 import Signup from "./routes/signup";
+import Journal from "./routes/journal";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "transactions",
         element: <Transactions />,
+      },
+      {
+        path: "journal",
+        element: <Journal />,
       },
     ],
   },

@@ -16,6 +16,11 @@ import React from "react";
 import * as HelperFunctions from "../code";
 
 export default function Login() {
+    if (HelperFunctions.getUserData()){
+        HelperFunctions.redirect("dashboard");
+        return <></>;
+    }
+
     const [formValue, setFormValue] = React.useState({
         company: "",
     })

@@ -211,11 +211,11 @@ export default function Transactions() {
                 <Form.Control name="amount" accepter={InputNumber} step={0.01} errorMessage={amountErrorMessage} defaultValue={formValue["amount"]}/>
               </Form.Group>
               <Form.Group controlId="from">
-                <Form.ControlLabel>From Account:</Form.ControlLabel>
+                <Form.ControlLabel>Debit Account:</Form.ControlLabel>
                 <Form.Control name="from" accepter={SelectPicker} data={selectData} errorMessage={fromErrorMessage} defaultValue={formValue["from"]}/>
               </Form.Group>
               <Form.Group controlId="to">
-                <Form.ControlLabel>To Account:</Form.ControlLabel>
+                <Form.ControlLabel>Credit Account:</Form.ControlLabel>
                 <Form.Control name="to" accepter={SelectPicker} data={selectData} errorMessage={toErrorMessage} defaultValue={formValue["to"]}/>
               </Form.Group>
             </Form>

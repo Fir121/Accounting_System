@@ -6,7 +6,6 @@ import LineChartIcon from '@rsuite/icons/LineChart';
 import ModelIcon from '@rsuite/icons/Model';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import React, { useCallback } from "react";
-import CogIcon from '@rsuite/icons/legacy/Cog';
 import AngleLeftIcon from '@rsuite/icons/legacy/AngleLeft';
 import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
 import ExitIcon from '@rsuite/icons/Exit';
@@ -42,12 +41,18 @@ const NavToggle = ({ expand, onChange }) => {
 export default function Root() {
     var activeKey = null
     var setActiveKey = null
-    if (window.location.pathname !== '/' && HelperFunctions.getUserData()){
+
+    if (window.location.pathname === '/'){
+      HelperFunctions.redirect("dashboard");
+      return <></>;
+    }
+
+    if (HelperFunctions.getUserData()){
       [activeKey, setActiveKey] = React.useState(window.location.pathname.substring(1));
     }
     else{
-      HelperFunctions.redirect("login")
-      return <></>
+      HelperFunctions.redirect("login");
+      return <></>;
     }
 
     function signOut(){
@@ -66,6 +71,7 @@ export default function Root() {
     const goDashboard = useCallback((e) => navigate('/dashboard', {replace: true}), [navigate]);
     const goAccounts = useCallback((e) => navigate('/accounts', {replace: true}), [navigate]);
     const goTransactions = useCallback((e) => navigate('/transactions', {replace: true}), [navigate]);
+    const goJournal = useCallback((e) => navigate('/journal', {replace: true}), [navigate]);
 
     const [expand, setExpand] = React.useState(true);
 
@@ -101,7 +107,7 @@ export default function Root() {
                   Transactions
                 </Nav.Item>
                 <Nav.Menu eventKey="report" title="Report" icon={<LineChartIcon />}>
-                  <Nav.Item eventKey="report-1">R1</Nav.Item>
+                  <Nav.Item eventKey="journal" onClick={goJournal}>Journal</Nav.Item>
                   <Nav.Item eventKey="report-2">R2</Nav.Item>
                   <Nav.Item eventKey="report-3">R2</Nav.Item>
                   <Nav.Item eventKey="report-4">R4</Nav.Item>

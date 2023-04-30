@@ -479,3 +479,110 @@ export function deleteDescription(description_id,date,handleClose,setData){
         }
     });
 }
+
+function setDictData(dict, sno, particular, debit, credit){
+    console.log(sno,particular, debit, credit)
+    dict["sno"] = sno;
+    dict["particular"] = particular;
+    dict["debit"] = debit;
+    dict["credit"] = credit;
+    return dict;
+}
+
+function addToData(journal, count, data){
+    var cur_entry = {};
+    cur_entry = setDictData(cur_entry, count, "From "+data.from_account, data.transaction_amount + " AED", "");
+    journal.push(cur_entry);
+    count++;
+    cur_entry = setDictData(cur_entry, count, "To "+data.to_account, "", data.transaction_amount + " AED");
+    journal.push(cur_entry);
+    count++;
+    return count;
+}
+
+export function getDailyJournal(transaction_date, setData){
+    transaction_date = process_date(transaction_date);
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/get_daily_journal",
+        data: {"user_id":user_data["user_id"], "transaction_date":transaction_date}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    var datas = data.data;
+                    var journal = [];
+                    var count = 1
+                    console.log("here");
+                    for (var i=0; i<datas.length; i++){
+                        if (isEmpty(datas[i].description_id)){
+                            count = addToData(journal, count, datas[i]);
+                        }
+                        else{
+                            var cur_description_id = datas[i].description_id;
+                            var to_accounts = [];
+                            var from_accounts = [];
+                            var data_accounts = [];
+                            for (var j=i; j<datas.length; j++){
+                                if (datas[j].description_id == cur_description_id){
+                                    to_accounts.push(datas[j].to_account);
+                                    from_accounts.push(datas[j].from_account);
+                                    data_accounts.push(datas[j]);
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                            if (data_accounts.length == 1){
+                                count = addToData(journal, count, datas[i]);
+                            }
+                            else{
+                                if ([... new Set(to_accounts)].length == 1){
+                                    var total_amount = 0;
+                                    for (var k=0; k<data_accounts.length; k++){
+                                        var cur_entry = {};
+                                        cur_entry = setDictData(cur_entry, count, "From "+data_accounts[k].from_account, data_accounts[k].transaction_amount + " AED", "");
+                                        journal.push(cur_entry);
+                                        total_amount += data_accounts[k].transaction_amount;
+                                        count++;
+                                    }
+                                    var cur_entry = {};
+                                    cur_entry = setDictData(cur_entry, count, "To "+data_accounts[0].to_account, "", total_amount + " AED");
+                                    journal.push(cur_entry);
+                                    count++;
+                                    i += data_accounts.length-1;
+                                }
+                                else if ([... new Set(from_accounts)].length == 1){
+                                    var total_amount = 0;
+                                    for (var k=0; k<data_accounts.length; k++){
+                                        total_amount += data_accounts[k].transaction_amount;
+                                    }
+                                    console.log(total_amount);
+                                    var cur_entry = {};
+                                    cur_entry = setDictData(cur_entry, count, "From "+data_accounts[0].from_account, total_amount + " AED", "");
+                                    journal.push(cur_entry);
+                                    count++;
+                                    for (var k=0; k<data_accounts.length; k++){
+                                        var cur_entry = {};
+                                        cur_entry = setDictData(cur_entry, count, "To "+data_accounts[k].to_account, "", data_accounts[k].transaction_amount + " AED");
+                                        journal.push(cur_entry);
+                                        count++;
+                                    }
+                                    i += data_accounts.length-1;
+                                }
+                            }
+                        }
+                    }
+                    setData(journal);
+                    console.log(journal);
+                    return journal;
+                }
+                else{
+                    displayError(data.description);
+                    return [];
+                }
+            }).fail( function(exp) {
+                displayError();
+                return [];
+        });
+}

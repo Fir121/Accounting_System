@@ -118,7 +118,7 @@ def delete_account(account_id):
 def create_transaction(transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id):
     mydb, cursor = create_cursor()
     try:
-        cursor.execute("insert into transaction(transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id) values(%s, %s, %s, %s, %s)", (transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id))
+        cursor.execute("insert into transaction(transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id) values(%s, %s, %s, %s)", (transaction_date, transaction_amount, transaction_from_account_id, transaction_to_account_id))
     except:
         return return_message(mydb, cursor, False, "Could not create transaction")
     return return_message(mydb, cursor, True)
@@ -224,4 +224,16 @@ def read_description(description_id):
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "description does not Exist")
+    return return_message(mydb, cursor, True, data=data)
+
+
+#### REPORTS
+
+def get_daily_journal(user_id, transaction_date):
+    mydb, cursor = create_cursor()
+    try:
+        cursor.execute("CALL SelectDailyJournal(%s, %s) ",(user_id,transaction_date))
+    except:
+        return return_message(mydb, cursor, False, "Internal Sever Error")
+    data = cursor.fetchall()
     return return_message(mydb, cursor, True, data=data)

@@ -122,5 +122,11 @@ def delete_description():
     description_id = request.form.get('description_id')
     return jsonify(bf.delete_description(description_id))
 
+@app.route('/get_daily_journal', methods=['GET'])
+def get_daily_journal():
+    user_id = request.args.get('user_id')
+    transaction_date = request.args.get('transaction_date')
+    return jsonify(bf.get_daily_journal(user_id,transaction_date))
+
 if __name__ == "__main__":
     app.run(debug=True)

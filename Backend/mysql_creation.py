@@ -115,3 +115,19 @@ END
 """)
 # $$
 # DELIMITER ;
+
+
+
+### PROCEDURES
+
+#DELIMITER $$
+cursor.execute("""
+    CREATE PROCEDURE SelectDailyJournal(user_of_journal_id INT, date_of_journal date)   
+    BEGIN
+        SELECT * from usertransaction left join description on transaction_description_id=description_id 
+        where transaction_date=date_of_journal and user_id=user_of_journal_id 
+        order by transaction_description_id;
+    END
+""")
+# $$
+# DELIMITER ;

@@ -27,6 +27,7 @@ h5,h6{
 }
 
 html {
+  background-color: #1a1d24 !important;
   box-sizing: border-box;
 }
 *,
@@ -44,6 +45,7 @@ body {
 
 html,
 body {
+  background-color: #1a1d24 !important;
   height: 100%;
   margin: 0;
   line-height: 1.5;
