@@ -481,7 +481,7 @@ export function deleteDescription(description_id,date,handleClose,setData){
 }
 
 function setDictData(dict, sno, particular, debit, credit){
-    console.log(sno,particular, debit, credit)
+    console.log(sno,particular, debit, credit);
     dict["sno"] = sno;
     dict["particular"] = particular;
     dict["debit"] = debit;
@@ -494,8 +494,9 @@ function addToData(journal, count, data){
     cur_entry = setDictData(cur_entry, count, "From "+data.from_account, data.transaction_amount + " AED", "");
     journal.push(cur_entry);
     count++;
-    cur_entry = setDictData(cur_entry, count, "To "+data.to_account, "", data.transaction_amount + " AED");
-    journal.push(cur_entry);
+    var cur_entry2 = {};
+    cur_entry2 = setDictData(cur_entry2, count, "To "+data.to_account, "", data.transaction_amount + " AED");
+    journal.push(cur_entry2);
     count++;
     return count;
 }
@@ -513,7 +514,6 @@ export function getDailyJournal(transaction_date, setData){
                     var datas = data.data;
                     var journal = [];
                     var count = 1
-                    console.log("here");
                     for (var i=0; i<datas.length; i++){
                         if (isEmpty(datas[i].description_id)){
                             count = addToData(journal, count, datas[i]);
