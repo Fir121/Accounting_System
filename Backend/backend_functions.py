@@ -28,7 +28,7 @@ def create_user(user_company_name):
     try:
         cursor.execute("select * from user where user_company_name=%s",(user_company_name,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "Could Not Create Account")
@@ -39,7 +39,7 @@ def read_user(user_id):
     try:
         cursor.execute("select * from user where user_id=%s",(user_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "User does not Exist")
@@ -50,7 +50,7 @@ def read_user_login(user_company_name):
     try:
         cursor.execute("select * from user where user_company_name=%s",(user_company_name,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "User does not Exist")
@@ -62,7 +62,7 @@ def delete_user(user_id):
     try:
         cursor.execute("delete from user where user_id=%s",(user_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     return return_message(mydb, cursor, True)
 
 #### ACCOUNTS
@@ -79,7 +79,7 @@ def read_account(account_id):
     try:
         cursor.execute("select * from account where account_id=%s",(account_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "account does not Exist")
@@ -91,7 +91,7 @@ def get_accounts(user_id, detailed):
         cursor.execute("select * from account where account_user_id=%s",(user_id,))
     except Exception as e:
         print(e)
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchall()
     if not detailed:
         for i in range(len(data)):
@@ -111,7 +111,7 @@ def delete_account(account_id):
     try:
         cursor.execute("delete from account where account_id=%s",(account_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     return return_message(mydb, cursor, True)
 
 #### TRANSACTIONS
@@ -128,7 +128,7 @@ def read_transaction(transaction_id):
     try:
         cursor.execute("select * from transaction left join description on transaction.transaction_description_id = description.description_id where transaction_id=%s",(transaction_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "transaction does not Exist")
@@ -140,7 +140,7 @@ def get_transactions(user_id, transaction_date):
         cursor.execute("select * from UserTransaction where user_id=%s and transaction_date=%s",(user_id, transaction_date))
     except Exception as e:
         print(e)
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchall()
     return return_message(mydb, cursor, True, data=data)
 
@@ -157,7 +157,7 @@ def delete_transaction(transaction_id):
     try:
         cursor.execute("delete from transaction where transaction_id=%s",(transaction_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     return return_message(mydb, cursor, True)
 
 #### DESCRIPTIONS
@@ -170,7 +170,7 @@ def create_description(description, description_links):
     try:
         cursor.execute("select LAST_INSERT_ID() as description_id")
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "Could Not link description")
@@ -194,7 +194,7 @@ def get_descriptions(user_id, date):
         cursor.execute("select * from UserDescription where user_id=%s and transaction_date=%s",(user_id, date))
     except Exception as e:
         print(e)
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchall()
     return return_message(mydb, cursor, True, data=data)
 
@@ -211,7 +211,7 @@ def delete_description(description_id):
     try:
         cursor.execute("delete from description where description_id=%s",(description_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     return return_message(mydb, cursor, True)
 
 
@@ -220,7 +220,7 @@ def read_description(description_id):
     try:
         cursor.execute("select * from description where description_id=%s",(description_id,))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchone()
     if data is None:
         return return_message(mydb, cursor, False, "description does not Exist")
@@ -234,6 +234,6 @@ def get_daily_journal(user_id, transaction_date):
     try:
         cursor.execute("CALL SelectDailyJournal(%s, %s) ",(user_id,transaction_date))
     except:
-        return return_message(mydb, cursor, False, "Internal Sever Error")
+        return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchall()
     return return_message(mydb, cursor, True, data=data)
