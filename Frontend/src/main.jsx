@@ -13,6 +13,7 @@ import Transactions from "./routes/transactions";
 import Login from "./routes/login";
 import Signup from "./routes/signup";
 import Journal from "./routes/journal";
+import AccountReport from "./routes/account_report";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "journal",
         element: <Journal />,
+      },
+      {
+        path: "accountreport",
+        element: <AccountReport />,
       },
     ],
   },

@@ -128,5 +128,10 @@ def get_daily_journal():
     transaction_date = request.args.get('transaction_date')
     return jsonify(bf.get_daily_journal(user_id,transaction_date))
 
+@app.route('/get_account_reports', methods=['GET'])
+def get_account_reports():
+    user_id = request.args.get('user_id')
+    return jsonify(bf.get_account_reports(user_id))
+
 if __name__ == "__main__":
     app.run(debug=True)

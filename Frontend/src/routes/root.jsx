@@ -72,6 +72,7 @@ export default function Root() {
     const goAccounts = useCallback((e) => navigate('/accounts', {replace: true}), [navigate]);
     const goTransactions = useCallback((e) => navigate('/transactions', {replace: true}), [navigate]);
     const goJournal = useCallback((e) => navigate('/journal', {replace: true}), [navigate]);
+    const goAccountReport = useCallback((e) => navigate('/accountreport', {replace: true}), [navigate]);
 
     const [expand, setExpand] = React.useState(true);
 
@@ -108,9 +109,7 @@ export default function Root() {
                 </Nav.Item>
                 <Nav.Menu eventKey="report" title="Report" icon={<LineChartIcon />}>
                   <Nav.Item eventKey="journal" onClick={goJournal}>Journal</Nav.Item>
-                  <Nav.Item eventKey="report-2">R2</Nav.Item>
-                  <Nav.Item eventKey="report-3">R2</Nav.Item>
-                  <Nav.Item eventKey="report-4">R4</Nav.Item>
+                  <Nav.Item eventKey="accountreport" onClick={goAccountReport}>Account</Nav.Item>
                 </Nav.Menu>
               </Nav>
             </Sidenav.Body>

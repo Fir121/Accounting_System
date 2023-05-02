@@ -586,3 +586,25 @@ export function getDailyJournal(transaction_date, setData){
                 return [];
         });
 }
+
+export function getAccountReports(setData){
+    return $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: base_url+"/get_account_reports",
+        data: {"user_id":user_data["user_id"]}}).then(
+            function(data) {
+                console.log(data);
+                if (data.status == 1){
+                    setData(data.data);
+                    return data.data;
+                }
+                else{
+                    displayError(data.description);
+                    return [];
+                }
+            }).fail( function(exp) {
+                displayError();
+                return [];
+        });
+}

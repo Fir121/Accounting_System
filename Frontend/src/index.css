@@ -9,6 +9,11 @@ h5,h6{
   color:#2596be !important;
 }
 
+.accordion-button{
+  background-color: rgb(24, 25, 28) !important;
+  color: rgb(194, 194, 194) !important;
+}
+
 .tablebody{
   color: #f0f0f0
 }

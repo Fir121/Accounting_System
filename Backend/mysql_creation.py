@@ -131,3 +131,22 @@ cursor.execute("""
 """)
 # $$
 # DELIMITER ;
+
+#DELIMITER $$
+cursor.execute("""
+    CREATE PROCEDURE SelectAccountReports(user_id INT)   
+    BEGIN
+        SELECT A.account_id, account_name, debit, credit FROM(
+		SELECT account_id, account_name, COALESCE(sum(transaction_amount),0) as debit 
+		from account left join transaction on account_id=transaction_from_account_id 
+		where account_user_id=user_id group by account_id) AS A
+		JOIN(
+		SELECT account_id, COALESCE(sum(transaction_amount),0) as credit 
+		from account left join transaction on account_id=transaction_to_account_id 
+		where account_user_id=user_id group by account_id
+		) AS B
+		ON A.account_id=B.account_id;
+    END $$
+""")
+# $$
+# DELIMITER ;

@@ -233,7 +233,18 @@ def get_daily_journal(user_id, transaction_date):
     mydb, cursor = create_cursor()
     try:
         cursor.execute("CALL SelectDailyJournal(%s, %s) ",(user_id,transaction_date))
-    except:
+    except Exception as e:
+        print(e)
+        return return_message(mydb, cursor, False, "Internal Server Error")
+    data = cursor.fetchall()
+    return return_message(mydb, cursor, True, data=data)
+
+def get_account_reports(userid):
+    mydb, cursor = create_cursor()
+    try:
+        cursor.execute("CALL SelectAccountReports(%s) ",(userid,))
+    except Exception as e:
+        print(e)
         return return_message(mydb, cursor, False, "Internal Server Error")
     data = cursor.fetchall()
     return return_message(mydb, cursor, True, data=data)
