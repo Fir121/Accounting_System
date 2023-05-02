@@ -42,6 +42,10 @@ export function getUserData(){
     return true;
 }
 
+export function getUser(){
+    return user_data["user_company_name"];
+}
+
 export function login(user_company_name){
     $.ajax({
         type: "GET",
@@ -628,7 +632,7 @@ export function deleteUserAccount(){
             console.log(data);
             if (data.status == 1){
                 localStorage.clear();
-                redirect("/signup")
+                redirect("signup")
             }
             else{
                 displayError(data.description);
