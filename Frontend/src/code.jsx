@@ -608,3 +608,34 @@ export function getAccountReports(setData){
                 return [];
         });
 }
+
+export function helpThem(){
+    MySwal.fire({
+        title: <p>No.</p>,
+        icon: 'info',
+        text: "No help lol",
+    });
+    return;
+}
+
+export function deleteUserAccount(){
+    $.ajax({
+        type: "POST",
+        dataType:"json",
+        url: base_url+"/delete_user",
+        data: {"user_id":user_data["user_id"]},
+        success: function(data) {
+            console.log(data);
+            if (data.status == 1){
+                localStorage.clear();
+                redirect("/signup")
+            }
+            else{
+                displayError(data.description);
+            }
+        },
+        error: function(exp) {
+            displayError();
+        }
+    });
+}

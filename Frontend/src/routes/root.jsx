@@ -13,6 +13,12 @@ import HelpOutlineIcon from '@rsuite/icons/HelpOutline';
 import * as HelperFunctions from "../code";
 
 
+const helpThem = () => {
+  HelperFunctions.helpThem();
+}
+const deleteAccount = () => {
+  HelperFunctions.deleteUserAccount();
+}
 
 const NavToggle = ({ expand, onChange }) => {
   return (
@@ -24,8 +30,8 @@ const NavToggle = ({ expand, onChange }) => {
           trigger="click"
           title={<HelpOutlineIcon style={{ width: 20, height: 20 }} size="sm" />}
         >
-          <Nav.Item>Delete Account</Nav.Item>
-          <Nav.Item>Help</Nav.Item>
+          <Nav.Item onClick={deleteAccount}>Delete Account</Nav.Item>
+          <Nav.Item onClick={helpThem}>Help</Nav.Item>
         </Nav.Menu>
       </Nav>
 
